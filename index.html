@@ -1,0 +1,1064 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>大问号AI养号</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@400;500;700&display=swap">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@2.44.0/tabler-icons.min.css">
+  <style>
+    /* ============================================================
+       CSS Variables & Reset
+    ============================================================ */
+    :root {
+      --brand:        #DD6B20;
+      --brand-light:  #FEF3EB;
+      --brand-mid:    #F6E0CC;
+      --brand-dark:   #B85A1A;
+      --brand-text:   #7A3410;
+      --blue-bg:      #E6F1FB;
+      --blue-text:    #0C447C;
+      --blue-border:  #85B7EB;
+      --text-primary:   #1A1A1A;
+      --text-secondary: #888888;
+      --text-tertiary:  #BBBBBB;
+      --bg-page:      #F5F5F5;
+      --bg-card:      #FFFFFF;
+      --bg-secondary: #F9F9F9;
+      --border:       rgba(0,0,0,0.08);
+      --radius-sm:    8px;
+      --radius-md:    12px;
+      --radius-lg:    16px;
+      --font: 'Noto Sans SC', -apple-system, BlinkMacSystemFont, sans-serif;
+    }
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html, body { height: 100%; }
+    body {
+      font-family: var(--font);
+      background: #E0E0E0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 100vh;
+      padding: 24px 0;
+    }
+
+    /* ============================================================
+       Phone Shell
+    ============================================================ */
+    .phone {
+      width: 375px;
+      height: 812px;
+      background: var(--bg-page);
+      border-radius: 44px;
+      border: 10px solid #1A1A1A;
+      box-shadow: 0 0 0 2px #333, 0 32px 64px rgba(0,0,0,0.35);
+      overflow: hidden;
+      position: relative;
+      display: flex;
+      flex-direction: column;
+    }
+
+    /* ============================================================
+       Status Bar
+    ============================================================ */
+    .status-bar {
+      background: var(--bg-card);
+      height: 44px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 20px;
+      flex-shrink: 0;
+    }
+    .status-time { font-size: 12px; font-weight: 500; color: var(--text-primary); }
+    .status-icons { display: flex; align-items: center; gap: 4px; color: var(--text-primary); font-size: 14px; }
+
+    /* ============================================================
+       Screen
+    ============================================================ */
+    .screen {
+      display: none;
+      flex-direction: column;
+      flex: 1;
+      overflow: hidden;
+    }
+    .screen.active { display: flex; }
+
+    /* ============================================================
+       Header
+    ============================================================ */
+    .header {
+      background: var(--bg-card);
+      padding: 12px 20px 14px;
+      border-bottom: 0.5px solid var(--border);
+      flex-shrink: 0;
+    }
+    .header__top {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+    .header__title {
+      font-size: 18px;
+      font-weight: 500;
+      color: var(--text-primary);
+    }
+    .header__sub {
+      font-size: 12px;
+      color: var(--text-secondary);
+      margin-top: 3px;
+    }
+    .badge-running {
+      font-size: 12px;
+      background: var(--brand-light);
+      color: var(--brand-text);
+      padding: 3px 10px;
+      border-radius: 12px;
+      font-weight: 500;
+    }
+    .badge-count {
+      font-size: 12px;
+      padding: 3px 10px;
+      border-radius: 12px;
+    }
+    .badge-count--ok   { background: #E8F5E9; color: #2E7D32; }
+    .badge-count--warn { background: #FFF3E0; color: #E65100; }
+
+    /* ============================================================
+       Scroll Area
+    ============================================================ */
+    .scroll {
+      flex: 1;
+      overflow-y: auto;
+      padding: 14px 16px;
+      background: var(--bg-page);
+      -webkit-overflow-scrolling: touch;
+    }
+    .scroll::-webkit-scrollbar { display: none; }
+
+    /* ============================================================
+       Section Label
+    ============================================================ */
+    .sec-label {
+      font-size: 11px;
+      font-weight: 500;
+      color: var(--text-secondary);
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      margin: 4px 2px 8px;
+    }
+
+    /* ============================================================
+       Card
+    ============================================================ */
+    .card {
+      background: var(--bg-card);
+      border-radius: var(--radius-md);
+      border: 0.5px solid var(--border);
+      margin-bottom: 12px;
+      overflow: hidden;
+    }
+
+    /* ============================================================
+       Rule Banner
+    ============================================================ */
+    .banner {
+      background: var(--brand-light);
+      border-radius: var(--radius-sm);
+      padding: 10px 14px;
+      margin-bottom: 14px;
+      display: flex;
+      gap: 8px;
+      align-items: flex-start;
+    }
+    .banner i { color: var(--brand); font-size: 16px; flex-shrink: 0; margin-top: 1px; }
+    .banner__text {
+      font-size: 12px;
+      color: var(--brand-text);
+      line-height: 1.6;
+    }
+    .banner__text strong { font-weight: 500; }
+
+    /* ============================================================
+       Stat Grid (Home)
+    ============================================================ */
+    .stat-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 10px;
+      margin-bottom: 14px;
+    }
+    .stat-card {
+      background: var(--bg-secondary);
+      border-radius: var(--radius-sm);
+      padding: 12px;
+    }
+    .stat-card__label { font-size: 11px; color: var(--text-secondary); margin-bottom: 4px; }
+    .stat-card__val   { font-size: 22px; font-weight: 500; color: var(--brand); }
+    .stat-card__sub   { font-size: 11px; color: var(--text-secondary); margin-top: 1px; }
+
+    /* ============================================================
+       Order Task List (Home)
+    ============================================================ */
+    .order-task {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 10px 12px;
+      background: var(--bg-card);
+      border-radius: var(--radius-sm);
+      border: 0.5px solid var(--border);
+      margin-bottom: 8px;
+    }
+    .order-task__badge {
+      width: 20px; height: 20px;
+      border-radius: 50%;
+      background: var(--brand);
+      color: white;
+      font-size: 11px;
+      font-weight: 500;
+      display: flex; align-items: center; justify-content: center;
+      flex-shrink: 0;
+    }
+    .order-task__name { flex: 1; font-size: 14px; font-weight: 500; color: var(--text-primary); }
+    .order-task__qty {
+      font-size: 12px;
+      color: var(--brand-text);
+      background: var(--brand-light);
+      padding: 2px 8px;
+      border-radius: 10px;
+    }
+
+    /* ============================================================
+       Bar Chart
+    ============================================================ */
+    .bar-row { display: flex; align-items: center; gap: 8px; margin-bottom: 8px; }
+    .bar-row:last-child { margin-bottom: 0; }
+    .bar-row__day { font-size: 11px; color: var(--text-secondary); width: 20px; flex-shrink: 0; }
+    .bar-row__track {
+      flex: 1; height: 8px;
+      background: var(--brand-light);
+      border-radius: 4px;
+      overflow: hidden;
+    }
+    .bar-row__fill { height: 100%; background: var(--brand); border-radius: 4px; }
+    .bar-row__num {
+      font-size: 11px;
+      font-weight: 500;
+      color: var(--brand-text);
+      width: 24px;
+      text-align: right;
+      flex-shrink: 0;
+    }
+
+    /* ============================================================
+       Task List (Config)
+    ============================================================ */
+    .task-wrap { padding: 0 14px; }
+    .task-item {
+      padding: 12px 0;
+      border-bottom: 0.5px solid var(--border);
+    }
+    .task-item:last-child { border-bottom: none; }
+
+    .task-row {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      cursor: pointer;
+      -webkit-tap-highlight-color: transparent;
+    }
+    .task-check {
+      width: 22px; height: 22px;
+      border-radius: 50%;
+      border: 1.5px solid var(--text-tertiary);
+      flex-shrink: 0;
+      display: flex; align-items: center; justify-content: center;
+      transition: background 0.15s, border-color 0.15s;
+    }
+    .task-check.checked {
+      background: var(--brand);
+      border-color: var(--brand);
+    }
+    .task-check i { color: white; font-size: 12px; display: none; }
+    .task-check.checked i { display: block; }
+
+    .task-info { flex: 1; min-width: 0; }
+    .task-info__name {
+      font-size: 14px;
+      font-weight: 500;
+      color: var(--text-primary);
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+    .task-info__meta { font-size: 11px; color: var(--text-secondary); margin-top: 1px; }
+
+    .step-badge {
+      font-size: 11px;
+      font-weight: 500;
+      background: var(--blue-bg);
+      color: var(--blue-text);
+      border: 0.5px solid var(--blue-border);
+      padding: 2px 8px;
+      border-radius: 10px;
+      white-space: nowrap;
+      flex-shrink: 0;
+    }
+
+    /* ============================================================
+       Qty Expand
+    ============================================================ */
+    .qty-expand {
+      max-height: 0;
+      overflow: hidden;
+      opacity: 0;
+      transition: max-height 0.25s ease, opacity 0.2s ease;
+    }
+    .qty-expand.open { max-height: 100px; opacity: 1; }
+
+    .qty-inner {
+      margin-top: 10px;
+      background: var(--bg-secondary);
+      border-radius: var(--radius-sm);
+      padding: 10px 12px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+    .qty-label { font-size: 12px; color: var(--text-secondary); }
+    .qty-label strong {
+      display: block;
+      font-size: 13px;
+      font-weight: 500;
+      color: var(--text-primary);
+      margin-bottom: 1px;
+    }
+
+    /* ============================================================
+       Stepper
+    ============================================================ */
+    .stepper { display: flex; align-items: center; }
+    .stepper__btn {
+      width: 30px; height: 30px;
+      background: var(--bg-card);
+      border: 0.5px solid var(--border);
+      display: flex; align-items: center; justify-content: center;
+      cursor: pointer;
+      font-size: 18px;
+      color: var(--brand);
+      line-height: 1;
+      transition: background 0.12s;
+      user-select: none;
+      -webkit-tap-highlight-color: transparent;
+    }
+    .stepper__btn:first-child { border-radius: var(--radius-sm) 0 0 var(--radius-sm); }
+    .stepper__btn:last-child  { border-radius: 0 var(--radius-sm) var(--radius-sm) 0; }
+    .stepper__btn:active { background: var(--brand-light); }
+    .stepper__val {
+      width: 36px; height: 30px;
+      border-top: 0.5px solid var(--border);
+      border-bottom: 0.5px solid var(--border);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 13px;
+      font-weight: 500;
+      color: var(--text-primary);
+      background: var(--bg-card);
+    }
+
+    /* ============================================================
+       Dual Range Slider
+    ============================================================ */
+    .interval-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 4px;
+    }
+    .interval-title { font-size: 14px; font-weight: 500; color: var(--text-primary); }
+    .interval-badge {
+      font-size: 13px;
+      font-weight: 500;
+      background: var(--brand-light);
+      color: var(--brand-text);
+      padding: 2px 10px;
+      border-radius: 20px;
+    }
+    .interval-hint { font-size: 11px; color: var(--text-secondary); margin-bottom: 12px; }
+
+    .dual-range {
+      position: relative;
+      height: 36px;
+      margin: 4px 0 2px;
+    }
+    .dual-range__track {
+      position: absolute;
+      top: 50%; left: 0; right: 0;
+      height: 4px;
+      background: var(--bg-secondary);
+      border-radius: 2px;
+      transform: translateY(-50%);
+    }
+    .dual-range__fill {
+      position: absolute;
+      top: 0;
+      height: 100%;
+      background: var(--brand);
+      border-radius: 2px;
+    }
+    .dual-range input[type="range"] {
+      position: absolute;
+      top: 50%;
+      width: 100%;
+      transform: translateY(-50%);
+      -webkit-appearance: none;
+      appearance: none;
+      background: transparent;
+      pointer-events: none;
+      height: 4px;
+      margin: 0;
+    }
+    .dual-range input[type="range"]::-webkit-slider-thumb {
+      -webkit-appearance: none;
+      width: 20px; height: 20px;
+      border-radius: 50%;
+      background: var(--bg-card);
+      border: 2px solid var(--brand);
+      cursor: pointer;
+      pointer-events: auto;
+      box-shadow: 0 0 0 3px var(--brand-light);
+      transition: box-shadow 0.15s;
+    }
+    .dual-range input[type="range"]::-webkit-slider-thumb:active {
+      box-shadow: 0 0 0 5px var(--brand-light);
+    }
+    .dual-range input[type="range"]::-moz-range-thumb {
+      width: 20px; height: 20px;
+      border-radius: 50%;
+      background: var(--bg-card);
+      border: 2px solid var(--brand);
+      cursor: pointer;
+      pointer-events: auto;
+    }
+    .interval-scale {
+      display: flex;
+      justify-content: space-between;
+      font-size: 10px;
+      color: var(--text-secondary);
+      margin-top: 2px;
+    }
+
+    /* ============================================================
+       Bottom Action
+    ============================================================ */
+    .bottom-action {
+      padding: 12px 16px 20px;
+      background: var(--bg-card);
+      border-top: 0.5px solid var(--border);
+      flex-shrink: 0;
+    }
+    .btn-primary {
+      width: 100%;
+      height: 48px;
+      background: var(--brand);
+      color: white;
+      border: none;
+      border-radius: var(--radius-sm);
+      font-size: 16px;
+      font-weight: 500;
+      font-family: var(--font);
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      transition: background 0.15s;
+      -webkit-tap-highlight-color: transparent;
+    }
+    .btn-primary:hover  { background: var(--brand-dark); }
+    .btn-primary:active { background: var(--brand-dark); }
+    .btn-primary:disabled { background: #CCC; cursor: default; }
+
+    /* ============================================================
+       Tab Navigation
+    ============================================================ */
+    .tab-nav {
+      display: flex;
+      background: var(--bg-card);
+      border-top: 0.5px solid var(--border);
+      flex-shrink: 0;
+    }
+    .tab-item {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 8px 0 10px;
+      cursor: pointer;
+      font-size: 10px;
+      color: var(--text-secondary);
+      gap: 3px;
+      transition: color 0.15s;
+      -webkit-tap-highlight-color: transparent;
+    }
+    .tab-item.active { color: var(--brand); }
+    .tab-item i { font-size: 22px; }
+
+    /* ============================================================
+       Stats page extras
+    ============================================================ */
+    .week-badge {
+      font-size: 12px;
+      color: var(--brand);
+      cursor: pointer;
+    }
+    .trend-up   { font-size: 12px; color: #2E7D32; background: #E8F5E9; padding: 2px 8px; border-radius: 10px; }
+    .trend-down { font-size: 12px; color: #C62828; background: #FFEBEE; padding: 2px 8px; border-radius: 10px; }
+    .dist-row { margin-bottom: 10px; }
+    .dist-row:last-child { margin-bottom: 0; }
+    .dist-row__header { display: flex; justify-content: space-between; font-size: 12px; color: var(--text-secondary); margin-bottom: 4px; }
+    .dist-row__count  { color: var(--brand-text); font-weight: 500; }
+    .dist-row__track  { height: 6px; background: var(--brand-light); border-radius: 4px; }
+    .dist-row__fill   { height: 100%; background: var(--brand); border-radius: 4px; }
+
+    /* ============================================================
+       Confirm Overlay
+    ============================================================ */
+    .overlay {
+      display: none;
+      position: absolute;
+      inset: 0;
+      background: rgba(0, 0, 0, 0.45);
+      z-index: 200;
+      align-items: flex-end;
+      border-radius: 34px;
+    }
+    .overlay.show { display: flex; }
+
+    .confirm-sheet {
+      background: var(--bg-card);
+      border-radius: 20px 20px 0 0;
+      padding: 24px 20px 32px;
+      width: 100%;
+    }
+    .confirm-icon {
+      width: 52px; height: 52px;
+      background: var(--brand-light);
+      border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      margin: 0 auto 14px;
+    }
+    .confirm-icon i { font-size: 26px; color: var(--brand); }
+    .confirm-title {
+      font-size: 17px;
+      font-weight: 500;
+      text-align: center;
+      color: var(--text-primary);
+      margin-bottom: 8px;
+    }
+    .confirm-body {
+      font-size: 13px;
+      text-align: center;
+      color: var(--text-secondary);
+      line-height: 1.6;
+      margin-bottom: 16px;
+    }
+    .confirm-summary {
+      background: var(--brand-light);
+      border-radius: var(--radius-sm);
+      padding: 10px 14px;
+      margin-bottom: 20px;
+      font-size: 12px;
+      color: var(--brand-text);
+      line-height: 1.8;
+    }
+    .confirm-btns { display: flex; gap: 10px; }
+    .confirm-btn {
+      flex: 1; height: 46px;
+      border-radius: var(--radius-sm);
+      font-size: 15px;
+      font-family: var(--font);
+      cursor: pointer;
+      transition: background 0.15s;
+      -webkit-tap-highlight-color: transparent;
+    }
+    .confirm-btn--cancel {
+      background: var(--bg-card);
+      border: 0.5px solid var(--border);
+      color: var(--text-secondary);
+    }
+    .confirm-btn--ok {
+      background: var(--brand);
+      border: none;
+      color: white;
+      font-weight: 500;
+    }
+    .confirm-btn--ok:hover { background: var(--brand-dark); }
+
+    /* ============================================================
+       Toast
+    ============================================================ */
+    .toast {
+      display: none;
+      position: absolute;
+      top: 80px;
+      left: 50%;
+      transform: translateX(-50%);
+      background: #323232;
+      color: white;
+      font-size: 13px;
+      font-family: var(--font);
+      padding: 10px 18px;
+      border-radius: 20px;
+      z-index: 300;
+      white-space: nowrap;
+      gap: 6px;
+      align-items: center;
+    }
+    .toast.show { display: flex; }
+  </style>
+</head>
+<body>
+
+<div class="phone">
+  <!-- Status Bar -->
+  <div class="status-bar">
+    <span class="status-time" id="js-time">9:41</span>
+    <div class="status-icons">
+      <i class="ti ti-wifi"></i>
+      <i class="ti ti-battery-2"></i>
+    </div>
+  </div>
+
+  <!-- ============================================================
+       SCREEN: HOME
+  ============================================================ -->
+  <section class="screen active" id="screen-home" aria-label="概览">
+    <header class="header">
+      <div class="header__top">
+        <h1 class="header__title">AI 养号策略</h1>
+        <span class="badge-running">运行中</span>
+      </div>
+      <p class="header__sub">上次更新：今天 10:30</p>
+    </header>
+
+    <div class="scroll">
+      <div class="banner">
+        <i class="ti ti-info-circle"></i>
+        <p class="banner__text">
+          <strong>当前执行规则</strong>：每次从 6 个任务中随机执行 <strong>4 个</strong>，任务按顺序依次运行，每步间隔随机 <strong>3–7 分钟</strong>
+        </p>
+      </div>
+
+      <p class="sec-label">今日统计</p>
+      <div class="stat-grid">
+        <div class="stat-card">
+          <p class="stat-card__label">刷短视频</p>
+          <p class="stat-card__val">47</p>
+          <p class="stat-card__sub">条 / 今天</p>
+        </div>
+        <div class="stat-card">
+          <p class="stat-card__label">搜一搜查询</p>
+          <p class="stat-card__val">12</p>
+          <p class="stat-card__sub">次 / 今天</p>
+        </div>
+        <div class="stat-card">
+          <p class="stat-card__label">朋友圈点赞</p>
+          <p class="stat-card__val">8</p>
+          <p class="stat-card__sub">条 / 今天</p>
+        </div>
+        <div class="stat-card">
+          <p class="stat-card__label">执行轮次</p>
+          <p class="stat-card__val">6</p>
+          <p class="stat-card__sub">次 / 今天</p>
+        </div>
+      </div>
+
+      <p class="sec-label">已选任务（4/6）</p>
+      <div class="order-task"><div class="order-task__badge">1</div><p class="order-task__name">发布生活化朋友圈</p><span class="order-task__qty">1 条</span></div>
+      <div class="order-task"><div class="order-task__badge">2</div><p class="order-task__name">随机刷朋友圈点赞</p><span class="order-task__qty">≥ 3 条</span></div>
+      <div class="order-task"><div class="order-task__badge">3</div><p class="order-task__name">刷任意短视频</p><span class="order-task__qty">≥ 3 条</span></div>
+      <div class="order-task"><div class="order-task__badge">4</div><p class="order-task__name">使用搜一搜</p><span class="order-task__qty">≥ 3 次</span></div>
+
+      <p class="sec-label" style="margin-top:4px">近7天短视频记录</p>
+      <div class="card" style="padding:14px">
+        <div class="bar-row"><p class="bar-row__day">周一</p><div class="bar-row__track"><div class="bar-row__fill" style="width:65%"></div></div><p class="bar-row__num">39</p></div>
+        <div class="bar-row"><p class="bar-row__day">周二</p><div class="bar-row__track"><div class="bar-row__fill" style="width:78%"></div></div><p class="bar-row__num">47</p></div>
+        <div class="bar-row"><p class="bar-row__day">周三</p><div class="bar-row__track"><div class="bar-row__fill" style="width:55%"></div></div><p class="bar-row__num">33</p></div>
+        <div class="bar-row"><p class="bar-row__day">周四</p><div class="bar-row__track"><div class="bar-row__fill" style="width:90%"></div></div><p class="bar-row__num">54</p></div>
+        <div class="bar-row"><p class="bar-row__day">周五</p><div class="bar-row__track"><div class="bar-row__fill" style="width:70%"></div></div><p class="bar-row__num">42</p></div>
+        <div class="bar-row"><p class="bar-row__day">周六</p><div class="bar-row__track"><div class="bar-row__fill" style="width:83%"></div></div><p class="bar-row__num">50</p></div>
+        <div class="bar-row"><p class="bar-row__day">今天</p><div class="bar-row__track"><div class="bar-row__fill" style="width:78%"></div></div><p class="bar-row__num">47</p></div>
+      </div>
+    </div>
+
+    <nav class="tab-nav">
+      <div class="tab-item active" onclick="showScreen('home')" role="button"><i class="ti ti-home"></i>概览</div>
+      <div class="tab-item" onclick="showScreen('tasks')" role="button"><i class="ti ti-list-check"></i>任务配置</div>
+      <div class="tab-item" onclick="showScreen('stats')" role="button"><i class="ti ti-chart-bar"></i>数据统计</div>
+    </nav>
+  </section>
+
+  <!-- ============================================================
+       SCREEN: TASKS CONFIG
+  ============================================================ -->
+  <section class="screen" id="screen-tasks" aria-label="任务配置">
+    <header class="header">
+      <div class="header__top">
+        <h1 class="header__title">任务配置</h1>
+        <span class="badge-count badge-count--ok" id="sel-count">已选 4/6</span>
+      </div>
+      <p class="header__sub">选中的任务将按顺序依次执行</p>
+    </header>
+
+    <div class="scroll">
+      <div class="banner">
+        <i class="ti ti-alert-circle"></i>
+        <p class="banner__text">可按顺序从任务列表中选择需要执行的任务，并配置执行数量</p>
+      </div>
+
+      <p class="sec-label">选择执行任务</p>
+      <div class="card">
+        <div class="task-wrap" id="task-list"></div>
+      </div>
+
+      <p class="sec-label" style="margin-top:4px">执行间隔时间</p>
+      <div class="card" style="padding:14px">
+        <div class="interval-header">
+          <p class="interval-title">任务间隔时间范围</p>
+          <span class="interval-badge" id="interval-display">3 – 7 分钟</span>
+        </div>
+        <p class="interval-hint">将在此区间内随机选取间隔，模拟真实操作节奏</p>
+        <div class="dual-range" id="dual-range">
+          <div class="dual-range__track">
+            <div class="dual-range__fill" id="range-fill"></div>
+          </div>
+          <input type="range" id="range-min" min="0" max="10" value="3" step="1" aria-label="最小间隔">
+          <input type="range" id="range-max" min="0" max="10" value="7" step="1" aria-label="最大间隔">
+        </div>
+        <div class="interval-scale"><span>0 分钟</span><span>10 分钟</span></div>
+      </div>
+    </div>
+
+    <div class="bottom-action">
+      <button class="btn-primary" id="save-btn" onclick="showConfirm()">
+        <i class="ti ti-player-play"></i> 执行策略
+      </button>
+    </div>
+
+    <nav class="tab-nav">
+      <div class="tab-item" onclick="showScreen('home')" role="button"><i class="ti ti-home"></i>概览</div>
+      <div class="tab-item active" onclick="showScreen('tasks')" role="button"><i class="ti ti-list-check"></i>任务配置</div>
+      <div class="tab-item" onclick="showScreen('stats')" role="button"><i class="ti ti-chart-bar"></i>数据统计</div>
+    </nav>
+  </section>
+
+  <!-- ============================================================
+       SCREEN: STATS
+  ============================================================ -->
+  <section class="screen" id="screen-stats" aria-label="数据统计">
+    <header class="header">
+      <div class="header__top">
+        <h1 class="header__title">数据统计</h1>
+        <span class="week-badge">本周 ▾</span>
+      </div>
+      <p class="header__sub">AI 养号任务执行记录</p>
+    </header>
+
+    <div class="scroll">
+      <p class="sec-label">短视频刷视频记录</p>
+      <div class="card" style="padding:14px">
+        <div style="display:flex;justify-content:space-between;align-items:baseline;margin-bottom:14px">
+          <p style="font-size:22px;font-weight:500;color:var(--brand)">318 <span style="font-size:13px;font-weight:400;color:var(--text-secondary)">条本周</span></p>
+          <span class="trend-up">↑ 12% vs 上周</span>
+        </div>
+        <div class="bar-row"><p class="bar-row__day">周一</p><div class="bar-row__track"><div class="bar-row__fill" style="width:65%"></div></div><p class="bar-row__num">39</p></div>
+        <div class="bar-row"><p class="bar-row__day">周二</p><div class="bar-row__track"><div class="bar-row__fill" style="width:78%"></div></div><p class="bar-row__num">47</p></div>
+        <div class="bar-row"><p class="bar-row__day">周三</p><div class="bar-row__track"><div class="bar-row__fill" style="width:55%"></div></div><p class="bar-row__num">33</p></div>
+        <div class="bar-row"><p class="bar-row__day">周四</p><div class="bar-row__track"><div class="bar-row__fill" style="width:90%"></div></div><p class="bar-row__num">54</p></div>
+        <div class="bar-row"><p class="bar-row__day">周五</p><div class="bar-row__track"><div class="bar-row__fill" style="width:70%"></div></div><p class="bar-row__num">42</p></div>
+        <div class="bar-row"><p class="bar-row__day">周六</p><div class="bar-row__track"><div class="bar-row__fill" style="width:83%"></div></div><p class="bar-row__num">50</p></div>
+        <div class="bar-row"><p class="bar-row__day">今天</p><div class="bar-row__track"><div class="bar-row__fill" style="width:88%"></div></div><p class="bar-row__num">53</p></div>
+      </div>
+
+      <p class="sec-label">搜一搜查询记录</p>
+      <div class="card" style="padding:14px">
+        <div style="display:flex;justify-content:space-between;align-items:baseline;margin-bottom:14px">
+          <p style="font-size:22px;font-weight:500;color:var(--brand)">74 <span style="font-size:13px;font-weight:400;color:var(--text-secondary)">次本周</span></p>
+          <span class="trend-up">↑ 8% vs 上周</span>
+        </div>
+        <div class="bar-row"><p class="bar-row__day">周一</p><div class="bar-row__track"><div class="bar-row__fill" style="width:60%"></div></div><p class="bar-row__num">9</p></div>
+        <div class="bar-row"><p class="bar-row__day">周二</p><div class="bar-row__track"><div class="bar-row__fill" style="width:80%"></div></div><p class="bar-row__num">12</p></div>
+        <div class="bar-row"><p class="bar-row__day">周三</p><div class="bar-row__track"><div class="bar-row__fill" style="width:67%"></div></div><p class="bar-row__num">10</p></div>
+        <div class="bar-row"><p class="bar-row__day">周四</p><div class="bar-row__track"><div class="bar-row__fill" style="width:93%"></div></div><p class="bar-row__num">14</p></div>
+        <div class="bar-row"><p class="bar-row__day">周五</p><div class="bar-row__track"><div class="bar-row__fill" style="width:73%"></div></div><p class="bar-row__num">11</p></div>
+        <div class="bar-row"><p class="bar-row__day">周六</p><div class="bar-row__track"><div class="bar-row__fill" style="width:53%"></div></div><p class="bar-row__num">8</p></div>
+        <div class="bar-row"><p class="bar-row__day">今天</p><div class="bar-row__track"><div class="bar-row__fill" style="width:80%"></div></div><p class="bar-row__num">12</p></div>
+      </div>
+
+      <p class="sec-label">执行任务分布</p>
+      <div class="card" style="padding:14px">
+        <div class="dist-row"><div class="dist-row__header"><span>朋友圈发布</span><span class="dist-row__count">42 次</span></div><div class="dist-row__track"><div class="dist-row__fill" style="width:52%"></div></div></div>
+        <div class="dist-row"><div class="dist-row__header"><span>朋友圈点赞</span><span class="dist-row__count">56 次</span></div><div class="dist-row__track"><div class="dist-row__fill" style="width:70%"></div></div></div>
+        <div class="dist-row"><div class="dist-row__header"><span>刷短视频</span><span class="dist-row__count">80 次</span></div><div class="dist-row__track"><div class="dist-row__fill" style="width:100%"></div></div></div>
+        <div class="dist-row"><div class="dist-row__header"><span>搜一搜</span><span class="dist-row__count">74 次</span></div><div class="dist-row__track"><div class="dist-row__fill" style="width:92%"></div></div></div>
+        <div class="dist-row"><div class="dist-row__header"><span>小程序</span><span class="dist-row__count">28 次</span></div><div class="dist-row__track"><div class="dist-row__fill" style="width:35%"></div></div></div>
+      </div>
+    </div>
+
+    <nav class="tab-nav">
+      <div class="tab-item" onclick="showScreen('home')" role="button"><i class="ti ti-home"></i>概览</div>
+      <div class="tab-item" onclick="showScreen('tasks')" role="button"><i class="ti ti-list-check"></i>任务配置</div>
+      <div class="tab-item active" onclick="showScreen('stats')" role="button"><i class="ti ti-chart-bar"></i>数据统计</div>
+    </nav>
+  </section>
+
+  <!-- ============================================================
+       Confirm Overlay
+  ============================================================ -->
+  <div class="overlay" id="confirm-overlay" role="dialog" aria-modal="true" aria-label="确认执行策略">
+    <div class="confirm-sheet">
+      <div class="confirm-icon"><i class="ti ti-player-play"></i></div>
+      <h2 class="confirm-title">确认执行策略？</h2>
+      <p class="confirm-body">确认后将立即按新策略运行，所有 AI 机器人账号将应用本次配置。</p>
+      <div class="confirm-summary" id="confirm-summary"></div>
+      <div class="confirm-btns">
+        <button class="confirm-btn confirm-btn--cancel" onclick="closeConfirm()">再想想</button>
+        <button class="confirm-btn confirm-btn--ok" onclick="doSave()">确认执行</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Toast -->
+  <div class="toast" id="toast" role="status">
+    <i class="ti ti-circle-check" style="color:#4CAF50"></i>
+    策略已执行并生效
+  </div>
+</div>
+
+<script>
+  /* ============================================================
+     Data
+  ============================================================ */
+  var tasks = [
+    { name: '发布生活化朋友圈', meta: '记录日常内容，保持活跃度',          qtyLabel: '每轮发布条数', qtyMin: 1, qtyMax: 10, qty: 1, prefix: '',    suffix: '条', checked: true  },
+    { name: '随机刷朋友圈点赞', meta: '提升好友互动活跃度',                 qtyLabel: '最少点赞条数', qtyMin: 1, qtyMax: 20, qty: 3, prefix: '≥ ', suffix: '条', checked: true  },
+    { name: '浏览公众号文章',   meta: '模拟内容消费行为',                   qtyLabel: '最少浏览条数', qtyMin: 1, qtyMax: 20, qty: 3, prefix: '≥ ', suffix: '条', checked: false },
+    { name: '刷任意短视频',     meta: '每条停留 ≥ 15 秒 · 记录每日条数',   qtyLabel: '最少刷视频条数', qtyMin: 1, qtyMax: 20, qty: 3, prefix: '≥ ', suffix: '条', checked: true  },
+    { name: '使用搜一搜',       meta: '查询任意内容 · 记录每日次数',        qtyLabel: '最少查询次数', qtyMin: 1, qtyMax: 20, qty: 3, prefix: '≥ ', suffix: '次', checked: true  },
+    { name: '使用小程序',       meta: '打开并使用任意小程序',               qtyLabel: '最少使用个数', qtyMin: 1, qtyMax: 20, qty: 3, prefix: '≥ ', suffix: '个', checked: false }
+  ];
+
+  var rMin = 3, rMax = 7;
+
+  var STEP_LABELS = ['第一步', '第二步', '第三步', '第四步', '第五步', '第六步'];
+
+  /* ============================================================
+     Helpers
+  ============================================================ */
+  function checkedCount() {
+    return tasks.filter(function(t) { return t.checked; }).length;
+  }
+
+  function stepLabel(n) {
+    return STEP_LABELS[n - 1] || ('第' + n + '步');
+  }
+
+  /* ============================================================
+     Screen Navigation
+  ============================================================ */
+  function showScreen(name) {
+    // Update screens
+    document.querySelectorAll('.screen').forEach(function(s) { s.classList.remove('active'); });
+    document.getElementById('screen-' + name).classList.add('active');
+
+    // Update tab indicators in all nav bars
+    document.querySelectorAll('.tab-item').forEach(function(item) {
+      item.classList.remove('active');
+      if (item.getAttribute('onclick') && item.getAttribute('onclick').indexOf("'" + name + "'") !== -1) {
+        item.classList.add('active');
+      }
+    });
+  }
+
+  /* ============================================================
+     Task List Render
+  ============================================================ */
+  function renderTasks() {
+    var list = document.getElementById('task-list');
+    var order = 0;
+    list.innerHTML = '';
+
+    tasks.forEach(function(t, i) {
+      if (t.checked) order++;
+      var currentOrder = t.checked ? order : 0;
+
+      // Wrapper
+      var item = document.createElement('div');
+      item.className = 'task-item';
+
+      // Row
+      var row = document.createElement('div');
+      row.className = 'task-row';
+      row.setAttribute('role', 'checkbox');
+      row.setAttribute('aria-checked', t.checked ? 'true' : 'false');
+      row.onclick = (function(idx) { return function() { toggleTask(idx); }; })(i);
+
+      // Checkbox indicator
+      var chk = document.createElement('div');
+      chk.className = 'task-check' + (t.checked ? ' checked' : '');
+      chk.innerHTML = '<i class="ti ti-check"></i>';
+
+      // Info
+      var info = document.createElement('div');
+      info.className = 'task-info';
+      info.innerHTML = '<p class="task-info__name">' + t.name + '</p>' +
+                       '<p class="task-info__meta">' + t.meta + '</p>';
+
+      row.appendChild(chk);
+      row.appendChild(info);
+
+      // Step badge (only when checked)
+      if (t.checked) {
+        var badge = document.createElement('span');
+        badge.className = 'step-badge';
+        badge.textContent = stepLabel(currentOrder);
+        row.appendChild(badge);
+      }
+
+      item.appendChild(row);
+
+      // Qty expand
+      var expand = document.createElement('div');
+      expand.className = 'qty-expand' + (t.checked ? ' open' : '');
+      expand.id = 'qty-' + i;
+      expand.innerHTML =
+        '<div class="qty-inner">' +
+          '<div class="qty-label">' +
+            '<strong>' + t.qtyLabel + '</strong>' +
+            t.prefix + t.qty + ' ' + t.suffix +
+          '</div>' +
+          '<div class="stepper">' +
+            '<div class="stepper__btn" onclick="stepQty(' + i + ', -1)" role="button" aria-label="减少">−</div>' +
+            '<div class="stepper__val" id="qv-' + i + '">' + t.qty + '</div>' +
+            '<div class="stepper__btn" onclick="stepQty(' + i + ', 1)" role="button" aria-label="增加">+</div>' +
+          '</div>' +
+        '</div>';
+
+      item.appendChild(expand);
+      list.appendChild(item);
+    });
+
+    updateSelCount();
+  }
+
+  function toggleTask(idx) {
+    // If trying to check but all tasks already checked, do nothing
+    if (!tasks[idx].checked && checkedCount() >= tasks.length) return;
+    tasks[idx].checked = !tasks[idx].checked;
+    renderTasks();
+  }
+
+  function stepQty(idx, delta) {
+    var t = tasks[idx];
+    t.qty = Math.max(t.qtyMin, Math.min(t.qtyMax, t.qty + delta));
+
+    var valEl = document.getElementById('qv-' + idx);
+    if (valEl) valEl.textContent = t.qty;
+
+    var labelEl = valEl ? valEl.closest('.qty-inner').querySelector('.qty-label') : null;
+    if (labelEl) labelEl.innerHTML = '<strong>' + t.qtyLabel + '</strong>' + t.prefix + t.qty + ' ' + t.suffix;
+  }
+
+  function updateSelCount() {
+    var n = checkedCount();
+    var el = document.getElementById('sel-count');
+    el.textContent = '已选 ' + n + '/' + tasks.length;
+    el.className = 'badge-count ' + (n > 0 ? 'badge-count--ok' : 'badge-count--warn');
+    document.getElementById('save-btn').disabled = (n === 0);
+  }
+
+  /* ============================================================
+     Dual Range Slider
+  ============================================================ */
+  function updateRangeFill() {
+    var fill = document.getElementById('range-fill');
+    fill.style.left  = (rMin / 10 * 100) + '%';
+    fill.style.width = ((rMax - rMin) / 10 * 100) + '%';
+    document.getElementById('interval-display').textContent = rMin + ' – ' + rMax + ' 分钟';
+  }
+
+  function initDualRange() {
+    var elMin = document.getElementById('range-min');
+    var elMax = document.getElementById('range-max');
+
+    elMin.addEventListener('input', function() {
+      rMin = parseInt(this.value);
+      if (rMin >= rMax) { rMin = rMax - 1; this.value = rMin; }
+      updateRangeFill();
+    });
+    elMax.addEventListener('input', function() {
+      rMax = parseInt(this.value);
+      if (rMax <= rMin) { rMax = rMin + 1; this.value = rMax; }
+      updateRangeFill();
+    });
+
+    updateRangeFill();
+  }
+
+  /* ============================================================
+     Confirm Overlay
+  ============================================================ */
+  function showConfirm() {
+    if (checkedCount() === 0) return;
+
+    var order = 0;
+    var lines = tasks
+      .filter(function(t) { return t.checked; })
+      .map(function(t) {
+        order++;
+        return stepLabel(order) + '：' + t.name + '（' + t.prefix + t.qty + t.suffix + '）';
+      })
+      .join('<br>');
+
+    document.getElementById('confirm-summary').innerHTML =
+      '间隔 ' + rMin + '–' + rMax + ' 分钟（随机）<br><br>' + lines;
+
+    document.getElementById('confirm-overlay').classList.add('show');
+  }
+
+  function closeConfirm() {
+    document.getElementById('confirm-overlay').classList.remove('show');
+  }
+
+  function doSave() {
+    closeConfirm();
+    var t = document.getElementById('toast');
+    t.classList.add('show');
+    setTimeout(function() { t.classList.remove('show'); }, 2500);
+  }
+
+  /* ============================================================
+     Real-time Clock
+  ============================================================ */
+  function updateClock() {
+    var now = new Date();
+    var h = now.getHours();
+    var m = now.getMinutes();
+    document.getElementById('js-time').textContent =
+      h + ':' + (m < 10 ? '0' + m : m);
+  }
+  updateClock();
+  setInterval(updateClock, 10000);
+
+  /* ============================================================
+     Init
+  ============================================================ */
+  renderTasks();
+  initDualRange();
+</script>
+</body>
+</html>
