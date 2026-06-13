@@ -166,14 +166,14 @@
   .interval-card{margin-top:14px;background:var(--surface);border:1px solid var(--line);border-radius:var(--radius);padding:14px 16px 10px;}
   .interval-card__top{display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:4px;}
   .interval__val{font-size:13px;font-weight:600;color:var(--primary-dark);}
-  .dual{position:relative;height:34px;margin-top:6px;}
-  .dual__rail{position:absolute;top:15px;left:0;right:0;height:4px;border-radius:4px;background:var(--track);}
-  .dual__fill{position:absolute;top:15px;height:4px;border-radius:4px;background:var(--primary);}
-  .dual input[type=range]{-webkit-appearance:none;appearance:none;position:absolute;top:0;left:0;width:100%;height:34px;margin:0;background:transparent;pointer-events:none;}
-  .dual input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;pointer-events:auto;width:20px;height:20px;border-radius:50%;background:#fff;border:2px solid var(--primary);box-shadow:0 1px 4px rgba(221,107,32,.35);cursor:pointer;}
+  .dual{position:relative;height:20px;margin-top:12px;}
+  .dual__rail{position:absolute;top:50%;transform:translateY(-50%);left:0;right:0;height:4px;border-radius:4px;background:var(--track);}
+  .dual__fill{position:absolute;top:50%;transform:translateY(-50%);height:4px;border-radius:4px;background:var(--primary);}
+  .dual input[type=range]{-webkit-appearance:none;appearance:none;position:absolute;top:0;left:0;width:100%;height:20px;margin:0;background:transparent;pointer-events:none;}
+  .dual input[type=range]::-webkit-slider-runnable-track{height:20px;background:transparent;border:none;}
+  .dual input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;pointer-events:auto;width:20px;height:20px;margin-top:0;border-radius:50%;background:#fff;border:2px solid var(--primary);box-shadow:0 1px 4px rgba(221,107,32,.35);cursor:pointer;}
+  .dual input[type=range]::-moz-range-track{height:20px;background:transparent;border:none;}
   .dual input[type=range]::-moz-range-thumb{pointer-events:auto;width:18px;height:18px;border-radius:50%;background:#fff;border:2px solid var(--primary);box-shadow:0 1px 4px rgba(221,107,32,.35);cursor:pointer;}
-  .dual input[type=range]::-webkit-slider-runnable-track{height:34px;background:transparent;}
-  .dual input[type=range]::-moz-range-track{height:34px;background:transparent;}
   .dual__ticks{display:flex;justify-content:space-between;font-size:10px;color:var(--ink-3);margin-top:-2px;padding:0 2px;}
 
   /* 确认弹层行 */
