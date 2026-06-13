@@ -1,1064 +1,552 @@
 <!DOCTYPE html>
 <html lang="zh-CN">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-  <title>大问号AI养号</title>
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@400;500;700&display=swap">
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@2.44.0/tabler-icons.min.css">
-  <style>
-    /* ============================================================
-       CSS Variables & Reset
-    ============================================================ */
-    :root {
-      --brand:        #DD6B20;
-      --brand-light:  #FEF3EB;
-      --brand-mid:    #F6E0CC;
-      --brand-dark:   #B85A1A;
-      --brand-text:   #7A3410;
-      --blue-bg:      #E6F1FB;
-      --blue-text:    #0C447C;
-      --blue-border:  #85B7EB;
-      --text-primary:   #1A1A1A;
-      --text-secondary: #888888;
-      --text-tertiary:  #BBBBBB;
-      --bg-page:      #F5F5F5;
-      --bg-card:      #FFFFFF;
-      --bg-secondary: #F9F9F9;
-      --border:       rgba(0,0,0,0.08);
-      --radius-sm:    8px;
-      --radius-md:    12px;
-      --radius-lg:    16px;
-      --font: 'Noto Sans SC', -apple-system, BlinkMacSystemFont, sans-serif;
-    }
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+<title>养号策略 · 大问号AI</title>
+<style>
+  /* ============ 设计令牌：主色 #DD6B20 + 大面积白 ============ */
+  :root{
+    --primary:#DD6B20; --primary-dark:#C25B12; --primary-deep:#8A4516;
+    --primary-soft:#FDF1E7; --primary-line:#F4DAC2;
+    --ink:#1F2329; --ink-2:#5B6470; --ink-3:#9AA3AE;
+    --line:#ECEEF1; --line-2:#E2E5E9;
+    --surface:#FFFFFF; --page:#F4F5F7; --track:#EEF0F3;
+    --radius:14px; --radius-sm:10px;
+    --shadow:0 1px 2px rgba(31,35,41,.04),0 8px 24px rgba(31,35,41,.06);
+    --font:-apple-system,BlinkMacSystemFont,"PingFang SC","Microsoft YaHei","Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+  }
+  *{box-sizing:border-box;-webkit-tap-highlight-color:transparent;}
+  html,body{margin:0;height:100%;}
+  body{font-family:var(--font);background:var(--page);color:var(--ink);display:flex;align-items:center;justify-content:center;min-height:100vh;padding:24px 0;font-variant-numeric:tabular-nums;}
 
-    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-    html, body { height: 100%; }
-    body {
-      font-family: var(--font);
-      background: #E0E0E0;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      min-height: 100vh;
-      padding: 24px 0;
-    }
+  /* ============ 手机外壳 ============ */
+  .phone{position:relative;width:390px;height:844px;background:var(--surface);border-radius:42px;overflow:hidden;box-shadow:var(--shadow);border:1px solid var(--line);display:flex;flex-direction:column;}
+  .statusbar{height:48px;flex:0 0 48px;display:flex;align-items:center;justify-content:space-between;padding:0 26px;font-size:14px;font-weight:600;}
+  .statusbar .dots{display:flex;align-items:center;gap:6px;}
+  .statusbar svg{display:block;}
 
-    /* ============================================================
-       Phone Shell
-    ============================================================ */
-    .phone {
-      width: 375px;
-      height: 812px;
-      background: var(--bg-page);
-      border-radius: 44px;
-      border: 10px solid #1A1A1A;
-      box-shadow: 0 0 0 2px #333, 0 32px 64px rgba(0,0,0,0.35);
-      overflow: hidden;
-      position: relative;
-      display: flex;
-      flex-direction: column;
-    }
+  /* ============ 顶部导航 ============ */
+  .nav{flex:0 0 auto;padding:4px 16px 12px;display:flex;align-items:center;gap:8px;background:var(--surface);}
+  .nav__back{width:36px;height:36px;border-radius:50%;border:none;background:transparent;display:flex;align-items:center;justify-content:center;color:var(--ink);cursor:pointer;}
+  .nav__back:active{background:var(--line);}
+  .nav__back--ph{visibility:hidden;}
+  .nav__title{font-size:18px;font-weight:600;letter-spacing:.2px;flex:1;text-align:center;}
 
-    /* ============================================================
-       Status Bar
-    ============================================================ */
-    .status-bar {
-      background: var(--bg-card);
-      height: 44px;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      padding: 0 20px;
-      flex-shrink: 0;
-    }
-    .status-time { font-size: 12px; font-weight: 500; color: var(--text-primary); }
-    .status-icons { display: flex; align-items: center; gap: 4px; color: var(--text-primary); font-size: 14px; }
+  /* ============ 内容滚动区 ============ */
+  .body{flex:1;overflow-y:auto;-webkit-overflow-scrolling:touch;padding:6px 16px 110px;}
+  .body::-webkit-scrollbar{display:none;}
 
-    /* ============================================================
-       Screen
-    ============================================================ */
-    .screen {
-      display: none;
-      flex-direction: column;
-      flex: 1;
-      overflow: hidden;
-    }
-    .screen.active { display: flex; }
+  .sec-h{display:flex;align-items:baseline;justify-content:space-between;margin:18px 2px 12px;}
+  .sec-h:first-child{margin-top:6px;}
+  .sec-h__t{font-size:15px;font-weight:600;}
+  .sec-h__hint{font-size:12px;color:var(--ink-3);}
+  .pill-count{display:inline-flex;align-items:center;justify-content:center;min-width:18px;height:18px;padding:0 5px;border-radius:9px;background:var(--primary);color:#fff;font-size:11px;font-weight:700;margin-left:6px;}
 
-    /* ============================================================
-       Header
-    ============================================================ */
-    .header {
-      background: var(--bg-card);
-      padding: 12px 20px 14px;
-      border-bottom: 0.5px solid var(--border);
-      flex-shrink: 0;
-    }
-    .header__top {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-    }
-    .header__title {
-      font-size: 18px;
-      font-weight: 500;
-      color: var(--text-primary);
-    }
-    .header__sub {
-      font-size: 12px;
-      color: var(--text-secondary);
-      margin-top: 3px;
-    }
-    .badge-running {
-      font-size: 12px;
-      background: var(--brand-light);
-      color: var(--brand-text);
-      padding: 3px 10px;
-      border-radius: 12px;
-      font-weight: 500;
-    }
-    .badge-count {
-      font-size: 12px;
-      padding: 3px 10px;
-      border-radius: 12px;
-    }
-    .badge-count--ok   { background: #E8F5E9; color: #2E7D32; }
-    .badge-count--warn { background: #FFF3E0; color: #E65100; }
+  /* ============ 数据统计：顶部概览（一级=账号/行为，二级=各任务） ============ */
+  .ov-bar{display:flex;background:var(--surface);border:1px solid var(--line);border-radius:var(--radius);padding:13px 16px;margin-bottom:10px;box-shadow:0 1px 2px rgba(31,35,41,.03);}
+  .ov-bar .cell{flex:1;display:flex;align-items:center;gap:10px;}
+  .ov-bar .cell+.cell{border-left:1px solid var(--line);padding-left:16px;}
+  .ov-bar .ico{width:34px;height:34px;border-radius:10px;background:var(--primary-soft);color:var(--primary);display:flex;align-items:center;justify-content:center;flex:0 0 auto;}
+  .ov-bar .v{font-size:24px;font-weight:700;line-height:1.05;color:var(--ink);}
+  .ov-bar .v small{font-size:12px;font-weight:500;color:var(--ink-3);margin-left:2px;}
+  .ov-bar .k{font-size:12px;color:var(--ink-2);margin-top:2px;}
+  /* 二级：各任务统计，浅灰底、无边框、字号更小 */
+  .metric-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;}
+  .metric{background:#F7F8FA;border-radius:11px;padding:9px 10px;display:flex;align-items:center;gap:8px;}
+  .metric__ico{width:28px;height:28px;border-radius:8px;background:#fff;color:var(--primary);display:flex;align-items:center;justify-content:center;flex:0 0 auto;}
+  .metric__txt{min-width:0;display:flex;flex-direction:column;}
+  .metric__v{font-size:15px;font-weight:700;line-height:1.2;}
+  .metric__v small{font-size:10px;font-weight:500;color:var(--ink-3);margin-left:1px;}
+  .metric__n{font-size:10.5px;color:var(--ink-3);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;line-height:1.2;}
 
-    /* ============================================================
-       Scroll Area
-    ============================================================ */
-    .scroll {
-      flex: 1;
-      overflow-y: auto;
-      padding: 14px 16px;
-      background: var(--bg-page);
-      -webkit-overflow-scrolling: touch;
-    }
-    .scroll::-webkit-scrollbar { display: none; }
+  /* ============ 当前执行中的养号策略（淡雅留白 + 橙色点睛） ============ */
+  .active{background:#FFFCFA;border:1px solid #F2E4D6;border-radius:var(--radius);padding:15px 16px;}
+  .active__top{display:flex;align-items:center;gap:8px;margin-bottom:12px;}
+  .active__dot{width:7px;height:7px;border-radius:50%;background:var(--primary);position:relative;}
+  .active__dot::after{content:"";position:absolute;inset:-4px;border-radius:50%;border:1.5px solid var(--primary);opacity:.4;animation:pulse 1.8s infinite;}
+  @keyframes pulse{0%{transform:scale(.6);opacity:.5}100%{transform:scale(1.6);opacity:0}}
+  .active__title{font-size:13px;font-weight:600;color:var(--ink-2);flex:1;letter-spacing:.2px;}
+  .active__badge{font-size:11px;font-weight:700;color:var(--primary);background:var(--primary-soft);border-radius:20px;padding:3px 10px;}
+  .active__seq{display:flex;flex-wrap:wrap;gap:8px 12px;}
+  .active__item{font-size:13px;font-weight:500;color:var(--ink);display:inline-flex;align-items:baseline;gap:4px;}
+  .active__item i{font-style:normal;font-weight:700;color:var(--primary);}
+  .active__div{height:1px;background:#F2E4D6;margin:12px 0;}
+  .active__intv{font-size:13px;font-weight:500;color:var(--ink-2);display:flex;align-items:center;gap:6px;}
+  .active__intv svg{color:var(--primary);}
+  .active__intv b{color:var(--primary-dark);font-weight:700;}
+  .active__empty{font-size:13px;color:var(--ink-2);line-height:1.6;}
 
-    /* ============================================================
-       Section Label
-    ============================================================ */
-    .sec-label {
-      font-size: 11px;
-      font-weight: 500;
-      color: var(--text-secondary);
-      text-transform: uppercase;
-      letter-spacing: 0.06em;
-      margin: 4px 2px 8px;
-    }
+  /* ============ 历史数据：日期折叠列表 ============ */
+  .date-acc{display:flex;flex-direction:column;gap:10px;}
+  .acc-item{background:#fff;border:1px solid var(--line);border-radius:var(--radius);overflow:hidden;}
+  .acc-item.is-open{border-color:var(--primary-line);}
+  .acc-head{display:flex;align-items:center;gap:12px;padding:14px 16px;cursor:pointer;}
+  .acc-item.is-open .acc-head{background:var(--primary-soft);}
+  .acc-date b{font-size:15px;font-weight:600;color:var(--ink);}
+  .acc-date span{font-size:11px;color:var(--ink-3);margin-left:6px;}
+  .acc-sum{flex:1;text-align:right;font-size:13px;color:var(--ink-2);}
+  .acc-sum b{font-size:15px;font-weight:700;color:var(--primary-dark);margin:0 2px;}
+  .acc-chev{color:var(--ink-3);transition:transform .25s;display:flex;}
+  .acc-item.is-open .acc-chev{transform:rotate(90deg);color:var(--primary);}
+  .acc-body{max-height:0;overflow:hidden;transition:max-height .3s ease;}
+  .acc-item.is-open .acc-body{max-height:460px;}
+  .acc-inner{padding:6px 16px 16px;}
+  .acc-trend{font-size:12px;color:var(--ink-3);margin:0 0 8px;}
+  .d-row{display:flex;align-items:center;gap:12px;padding:11px 0;border-bottom:1px solid var(--line);}
+  .d-row:last-child{border-bottom:none;}
+  .d-row__ico{width:34px;height:34px;border-radius:10px;background:var(--primary-soft);color:var(--primary);display:flex;align-items:center;justify-content:center;flex:0 0 auto;}
+  .d-row__name{flex:1;font-size:14px;font-weight:500;}
+  .d-row__name small{display:block;font-size:11px;color:var(--ink-3);font-weight:400;}
+  .d-row__val{font-size:16px;font-weight:700;}
+  .bar{height:6px;border-radius:6px;background:var(--track);margin-top:8px;overflow:hidden;}
+  .bar i{display:block;height:100%;background:var(--primary);border-radius:6px;}
 
-    /* ============================================================
-       Card
-    ============================================================ */
-    .card {
-      background: var(--bg-card);
-      border-radius: var(--radius-md);
-      border: 0.5px solid var(--border);
-      margin-bottom: 12px;
-      overflow: hidden;
-    }
+  /* ============ 底部按钮 ============ */
+  .footer{position:absolute;left:0;right:0;bottom:0;padding:14px 16px 30px;background:rgba(255,255,255,.92);backdrop-filter:blur(8px);border-top:1px solid var(--line);}
+  .submit{width:100%;height:50px;border:none;border-radius:14px;background:var(--primary);color:#fff;font-size:16px;font-weight:600;cursor:pointer;transition:.15s;display:flex;align-items:center;justify-content:center;gap:7px;}
+  .submit:active{transform:scale(.985);background:var(--primary-dark);}
 
-    /* ============================================================
-       Rule Banner
-    ============================================================ */
-    .banner {
-      background: var(--brand-light);
-      border-radius: var(--radius-sm);
-      padding: 10px 14px;
-      margin-bottom: 14px;
-      display: flex;
-      gap: 8px;
-      align-items: flex-start;
-    }
-    .banner i { color: var(--brand); font-size: 16px; flex-shrink: 0; margin-top: 1px; }
-    .banner__text {
-      font-size: 12px;
-      color: var(--brand-text);
-      line-height: 1.6;
-    }
-    .banner__text strong { font-weight: 500; }
+  /* ============ 弹层通用 ============ */
+  .mask{position:absolute;inset:0;background:rgba(31,35,41,.42);opacity:0;visibility:hidden;transition:.22s;z-index:35;}
+  .mask.show{opacity:1;visibility:visible;}
+  .mask--confirm{z-index:45;}
+  .sheet{position:absolute;left:0;right:0;bottom:0;background:#fff;border-radius:22px 22px 0 0;transform:translateY(100%);transition:transform .3s cubic-bezier(.22,.61,.36,1);z-index:36;display:flex;flex-direction:column;}
+  .sheet.show{transform:translateY(0);}
+  .sheet--confirm{z-index:46;max-height:84%;}
+  /* 策略设置整页（从右滑入） */
+  .page{position:absolute;inset:0;background:var(--page);z-index:38;transform:translateX(100%);transition:transform .3s cubic-bezier(.22,.61,.36,1);display:flex;flex-direction:column;}
+  .page.show{transform:translateX(0);}
+  .sheet__grip{width:38px;height:4px;border-radius:4px;background:var(--line-2);margin:10px auto 4px;}
+  .sheet__h{padding:8px 20px 4px;}
+  .sheet__h h3{margin:0;font-size:17px;font-weight:600;}
+  .sheet__h p{margin:4px 0 0;font-size:12px;color:var(--ink-3);}
+  .sheet__foot{padding:12px 20px 28px;display:flex;gap:12px;border-top:1px solid var(--line);}
+  .btn-ghost{flex:1;height:48px;border:1px solid var(--line-2);background:#fff;border-radius:13px;font-size:15px;font-weight:600;color:var(--ink-2);cursor:pointer;}
+  .btn-ghost:active{background:var(--line);}
+  .btn-primary{flex:1.4;height:48px;border:none;background:var(--primary);color:#fff;border-radius:13px;font-size:15px;font-weight:600;cursor:pointer;}
+  .btn-primary:active{background:var(--primary-dark);}
 
-    /* ============================================================
-       Stat Grid (Home)
-    ============================================================ */
-    .stat-grid {
-      display: grid;
-      grid-template-columns: repeat(2, 1fr);
-      gap: 10px;
-      margin-bottom: 14px;
-    }
-    .stat-card {
-      background: var(--bg-secondary);
-      border-radius: var(--radius-sm);
-      padding: 12px;
-    }
-    .stat-card__label { font-size: 11px; color: var(--text-secondary); margin-bottom: 4px; }
-    .stat-card__val   { font-size: 22px; font-weight: 500; color: var(--brand); }
-    .stat-card__sub   { font-size: 11px; color: var(--text-secondary); margin-top: 1px; }
+  /* ============ 配置弹窗内容 ============ */
+  .cfg-scroll{flex:1;overflow-y:auto;padding:8px 16px 110px;}
+  .cfg-scroll::-webkit-scrollbar{display:none;}
+  .note{display:flex;gap:10px;background:var(--primary-soft);border:1px solid var(--primary-line);border-radius:var(--radius-sm);padding:11px 13px;margin:4px 0 16px;}
+  .note__ico{color:var(--primary);flex:0 0 auto;margin-top:1px;}
+  .note__txt{font-size:13px;line-height:1.6;color:var(--primary-deep);}
 
-    /* ============================================================
-       Order Task List (Home)
-    ============================================================ */
-    .order-task {
-      display: flex;
-      align-items: center;
-      gap: 10px;
-      padding: 10px 12px;
-      background: var(--bg-card);
-      border-radius: var(--radius-sm);
-      border: 0.5px solid var(--border);
-      margin-bottom: 8px;
-    }
-    .order-task__badge {
-      width: 20px; height: 20px;
-      border-radius: 50%;
-      background: var(--brand);
-      color: white;
-      font-size: 11px;
-      font-weight: 500;
-      display: flex; align-items: center; justify-content: center;
-      flex-shrink: 0;
-    }
-    .order-task__name { flex: 1; font-size: 14px; font-weight: 500; color: var(--text-primary); }
-    .order-task__qty {
-      font-size: 12px;
-      color: var(--brand-text);
-      background: var(--brand-light);
-      padding: 2px 8px;
-      border-radius: 10px;
-    }
+  .list{background:var(--surface);border:1px solid var(--line);border-radius:var(--radius);overflow:hidden;}
+  .task{border-bottom:1px solid var(--line);background:var(--surface);user-select:none;}
+  .task:last-child{border-bottom:none;}
+  .task.is-on .task__head{background:var(--primary-soft);}
+  .task__head{display:flex;align-items:center;gap:12px;padding:14px;cursor:pointer;transition:background .15s;}
+  .task__ico{flex:0 0 auto;width:38px;height:38px;border-radius:11px;background:#F4F6F8;color:var(--ink-2);display:flex;align-items:center;justify-content:center;transition:.15s;}
+  .task.is-on .task__ico{background:var(--primary);color:#fff;}
+  .task__main{flex:1;min-width:0;}
+  .task__name{font-size:15px;font-weight:600;display:flex;align-items:center;gap:8px;}
+  .task__seq{flex:0 0 auto;width:18px;height:18px;border-radius:50%;background:var(--primary);color:#fff;font-size:11px;font-weight:700;display:none;align-items:center;justify-content:center;}
+  .task.is-on .task__seq{display:inline-flex;}
+  .task__desc{font-size:12px;color:var(--ink-3);margin-top:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+  .task__check{flex:0 0 auto;width:24px;height:24px;border-radius:50%;border:2px solid var(--line-2);display:flex;align-items:center;justify-content:center;color:#fff;transition:.15s;}
+  .task.is-on .task__check{background:var(--primary);border-color:var(--primary);}
+  .task__check svg{opacity:0;transform:scale(.6);transition:.15s;}
+  .task.is-on .task__check svg{opacity:1;transform:scale(1);}
+  .task__panel{max-height:0;overflow:hidden;transition:max-height .28s ease;background:#fff;}
+  .task.is-on .task__panel{max-height:120px;}
+  .panel-inner{padding:4px 16px 18px;border-top:1px dashed var(--primary-line);margin:0 14px;}
+  .field{display:flex;align-items:center;justify-content:space-between;margin-top:14px;}
+  .field__label{font-size:13px;color:var(--ink-2);font-weight:500;}
+  .field__hint{font-size:11px;color:var(--ink-3);margin-top:2px;}
+  .stepper{display:flex;align-items:center;border:1px solid var(--line-2);border-radius:10px;overflow:hidden;}
+  .stepper button{width:34px;height:34px;border:none;background:#fff;color:var(--ink);font-size:18px;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:.12s;}
+  .stepper button:active{background:var(--primary-soft);color:var(--primary-dark);}
+  .stepper button:disabled{color:var(--line-2);cursor:not-allowed;}
+  .stepper__val{min-width:50px;height:34px;display:flex;align-items:center;justify-content:center;gap:2px;font-size:14px;font-weight:600;border-left:1px solid var(--line-2);border-right:1px solid var(--line-2);}
+  .stepper__val .geq{color:var(--primary);font-weight:700;margin-right:1px;}
 
-    /* ============================================================
-       Bar Chart
-    ============================================================ */
-    .bar-row { display: flex; align-items: center; gap: 8px; margin-bottom: 8px; }
-    .bar-row:last-child { margin-bottom: 0; }
-    .bar-row__day { font-size: 11px; color: var(--text-secondary); width: 20px; flex-shrink: 0; }
-    .bar-row__track {
-      flex: 1; height: 8px;
-      background: var(--brand-light);
-      border-radius: 4px;
-      overflow: hidden;
-    }
-    .bar-row__fill { height: 100%; background: var(--brand); border-radius: 4px; }
-    .bar-row__num {
-      font-size: 11px;
-      font-weight: 500;
-      color: var(--brand-text);
-      width: 24px;
-      text-align: right;
-      flex-shrink: 0;
-    }
+  .interval-card{margin-top:14px;background:var(--surface);border:1px solid var(--line);border-radius:var(--radius);padding:14px 16px 10px;}
+  .interval-card__top{display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:4px;}
+  .interval__val{font-size:13px;font-weight:600;color:var(--primary-dark);}
+  .dual{position:relative;height:34px;margin-top:6px;}
+  .dual__rail{position:absolute;top:15px;left:0;right:0;height:4px;border-radius:4px;background:var(--track);}
+  .dual__fill{position:absolute;top:15px;height:4px;border-radius:4px;background:var(--primary);}
+  .dual input[type=range]{-webkit-appearance:none;appearance:none;position:absolute;top:0;left:0;width:100%;height:34px;margin:0;background:transparent;pointer-events:none;}
+  .dual input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;pointer-events:auto;width:20px;height:20px;border-radius:50%;background:#fff;border:2px solid var(--primary);box-shadow:0 1px 4px rgba(221,107,32,.35);cursor:pointer;}
+  .dual input[type=range]::-moz-range-thumb{pointer-events:auto;width:18px;height:18px;border-radius:50%;background:#fff;border:2px solid var(--primary);box-shadow:0 1px 4px rgba(221,107,32,.35);cursor:pointer;}
+  .dual input[type=range]::-webkit-slider-runnable-track{height:34px;background:transparent;}
+  .dual input[type=range]::-moz-range-track{height:34px;background:transparent;}
+  .dual__ticks{display:flex;justify-content:space-between;font-size:10px;color:var(--ink-3);margin-top:-2px;padding:0 2px;}
 
-    /* ============================================================
-       Task List (Config)
-    ============================================================ */
-    .task-wrap { padding: 0 14px; }
-    .task-item {
-      padding: 12px 0;
-      border-bottom: 0.5px solid var(--border);
-    }
-    .task-item:last-child { border-bottom: none; }
+  /* 确认弹层行 */
+  .sheet__list{padding:12px 20px;overflow-y:auto;}
+  .sheet__list::-webkit-scrollbar{display:none;}
+  .srow{display:flex;align-items:center;gap:10px;padding:11px 0;border-bottom:1px solid var(--line);}
+  .srow:last-child{border-bottom:none;}
+  .srow--interval{margin-top:6px;padding:12px;background:var(--primary-soft);border-radius:10px;border-bottom:none;}
+  .srow--interval .srow__name{color:var(--primary-dark);font-weight:600;}
+  .srow__seq{width:20px;height:20px;border-radius:50%;background:var(--primary);color:#fff;font-size:11px;font-weight:700;display:flex;align-items:center;justify-content:center;flex:0 0 auto;}
+  .srow__name{font-size:14px;font-weight:500;flex:1;}
+  .srow__meta{font-size:13px;color:var(--ink-2);text-align:right;}
+  .srow__meta b{color:var(--primary-dark);}
 
-    .task-row {
-      display: flex;
-      align-items: center;
-      gap: 10px;
-      cursor: pointer;
-      -webkit-tap-highlight-color: transparent;
-    }
-    .task-check {
-      width: 22px; height: 22px;
-      border-radius: 50%;
-      border: 1.5px solid var(--text-tertiary);
-      flex-shrink: 0;
-      display: flex; align-items: center; justify-content: center;
-      transition: background 0.15s, border-color 0.15s;
-    }
-    .task-check.checked {
-      background: var(--brand);
-      border-color: var(--brand);
-    }
-    .task-check i { color: white; font-size: 12px; display: none; }
-    .task-check.checked i { display: block; }
+  /* Toast */
+  .toast{position:absolute;left:50%;bottom:96px;transform:translate(-50%,16px);background:var(--ink);color:#fff;padding:11px 18px;border-radius:24px;font-size:13px;font-weight:500;display:flex;align-items:center;gap:7px;opacity:0;visibility:hidden;transition:.25s;z-index:60;white-space:nowrap;}
+  .toast.show{opacity:1;visibility:visible;transform:translate(-50%,0);}
+  .toast svg{color:#5BE0A0;}
 
-    .task-info { flex: 1; min-width: 0; }
-    .task-info__name {
-      font-size: 14px;
-      font-weight: 500;
-      color: var(--text-primary);
-      white-space: nowrap;
-      overflow: hidden;
-      text-overflow: ellipsis;
-    }
-    .task-info__meta { font-size: 11px; color: var(--text-secondary); margin-top: 1px; }
-
-    .step-badge {
-      font-size: 11px;
-      font-weight: 500;
-      background: var(--blue-bg);
-      color: var(--blue-text);
-      border: 0.5px solid var(--blue-border);
-      padding: 2px 8px;
-      border-radius: 10px;
-      white-space: nowrap;
-      flex-shrink: 0;
-    }
-
-    /* ============================================================
-       Qty Expand
-    ============================================================ */
-    .qty-expand {
-      max-height: 0;
-      overflow: hidden;
-      opacity: 0;
-      transition: max-height 0.25s ease, opacity 0.2s ease;
-    }
-    .qty-expand.open { max-height: 100px; opacity: 1; }
-
-    .qty-inner {
-      margin-top: 10px;
-      background: var(--bg-secondary);
-      border-radius: var(--radius-sm);
-      padding: 10px 12px;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-    }
-    .qty-label { font-size: 12px; color: var(--text-secondary); }
-    .qty-label strong {
-      display: block;
-      font-size: 13px;
-      font-weight: 500;
-      color: var(--text-primary);
-      margin-bottom: 1px;
-    }
-
-    /* ============================================================
-       Stepper
-    ============================================================ */
-    .stepper { display: flex; align-items: center; }
-    .stepper__btn {
-      width: 30px; height: 30px;
-      background: var(--bg-card);
-      border: 0.5px solid var(--border);
-      display: flex; align-items: center; justify-content: center;
-      cursor: pointer;
-      font-size: 18px;
-      color: var(--brand);
-      line-height: 1;
-      transition: background 0.12s;
-      user-select: none;
-      -webkit-tap-highlight-color: transparent;
-    }
-    .stepper__btn:first-child { border-radius: var(--radius-sm) 0 0 var(--radius-sm); }
-    .stepper__btn:last-child  { border-radius: 0 var(--radius-sm) var(--radius-sm) 0; }
-    .stepper__btn:active { background: var(--brand-light); }
-    .stepper__val {
-      width: 36px; height: 30px;
-      border-top: 0.5px solid var(--border);
-      border-bottom: 0.5px solid var(--border);
-      display: flex; align-items: center; justify-content: center;
-      font-size: 13px;
-      font-weight: 500;
-      color: var(--text-primary);
-      background: var(--bg-card);
-    }
-
-    /* ============================================================
-       Dual Range Slider
-    ============================================================ */
-    .interval-header {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      margin-bottom: 4px;
-    }
-    .interval-title { font-size: 14px; font-weight: 500; color: var(--text-primary); }
-    .interval-badge {
-      font-size: 13px;
-      font-weight: 500;
-      background: var(--brand-light);
-      color: var(--brand-text);
-      padding: 2px 10px;
-      border-radius: 20px;
-    }
-    .interval-hint { font-size: 11px; color: var(--text-secondary); margin-bottom: 12px; }
-
-    .dual-range {
-      position: relative;
-      height: 36px;
-      margin: 4px 0 2px;
-    }
-    .dual-range__track {
-      position: absolute;
-      top: 50%; left: 0; right: 0;
-      height: 4px;
-      background: var(--bg-secondary);
-      border-radius: 2px;
-      transform: translateY(-50%);
-    }
-    .dual-range__fill {
-      position: absolute;
-      top: 0;
-      height: 100%;
-      background: var(--brand);
-      border-radius: 2px;
-    }
-    .dual-range input[type="range"] {
-      position: absolute;
-      top: 50%;
-      width: 100%;
-      transform: translateY(-50%);
-      -webkit-appearance: none;
-      appearance: none;
-      background: transparent;
-      pointer-events: none;
-      height: 4px;
-      margin: 0;
-    }
-    .dual-range input[type="range"]::-webkit-slider-thumb {
-      -webkit-appearance: none;
-      width: 20px; height: 20px;
-      border-radius: 50%;
-      background: var(--bg-card);
-      border: 2px solid var(--brand);
-      cursor: pointer;
-      pointer-events: auto;
-      box-shadow: 0 0 0 3px var(--brand-light);
-      transition: box-shadow 0.15s;
-    }
-    .dual-range input[type="range"]::-webkit-slider-thumb:active {
-      box-shadow: 0 0 0 5px var(--brand-light);
-    }
-    .dual-range input[type="range"]::-moz-range-thumb {
-      width: 20px; height: 20px;
-      border-radius: 50%;
-      background: var(--bg-card);
-      border: 2px solid var(--brand);
-      cursor: pointer;
-      pointer-events: auto;
-    }
-    .interval-scale {
-      display: flex;
-      justify-content: space-between;
-      font-size: 10px;
-      color: var(--text-secondary);
-      margin-top: 2px;
-    }
-
-    /* ============================================================
-       Bottom Action
-    ============================================================ */
-    .bottom-action {
-      padding: 12px 16px 20px;
-      background: var(--bg-card);
-      border-top: 0.5px solid var(--border);
-      flex-shrink: 0;
-    }
-    .btn-primary {
-      width: 100%;
-      height: 48px;
-      background: var(--brand);
-      color: white;
-      border: none;
-      border-radius: var(--radius-sm);
-      font-size: 16px;
-      font-weight: 500;
-      font-family: var(--font);
-      cursor: pointer;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      gap: 8px;
-      transition: background 0.15s;
-      -webkit-tap-highlight-color: transparent;
-    }
-    .btn-primary:hover  { background: var(--brand-dark); }
-    .btn-primary:active { background: var(--brand-dark); }
-    .btn-primary:disabled { background: #CCC; cursor: default; }
-
-    /* ============================================================
-       Tab Navigation
-    ============================================================ */
-    .tab-nav {
-      display: flex;
-      background: var(--bg-card);
-      border-top: 0.5px solid var(--border);
-      flex-shrink: 0;
-    }
-    .tab-item {
-      flex: 1;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      padding: 8px 0 10px;
-      cursor: pointer;
-      font-size: 10px;
-      color: var(--text-secondary);
-      gap: 3px;
-      transition: color 0.15s;
-      -webkit-tap-highlight-color: transparent;
-    }
-    .tab-item.active { color: var(--brand); }
-    .tab-item i { font-size: 22px; }
-
-    /* ============================================================
-       Stats page extras
-    ============================================================ */
-    .week-badge {
-      font-size: 12px;
-      color: var(--brand);
-      cursor: pointer;
-    }
-    .trend-up   { font-size: 12px; color: #2E7D32; background: #E8F5E9; padding: 2px 8px; border-radius: 10px; }
-    .trend-down { font-size: 12px; color: #C62828; background: #FFEBEE; padding: 2px 8px; border-radius: 10px; }
-    .dist-row { margin-bottom: 10px; }
-    .dist-row:last-child { margin-bottom: 0; }
-    .dist-row__header { display: flex; justify-content: space-between; font-size: 12px; color: var(--text-secondary); margin-bottom: 4px; }
-    .dist-row__count  { color: var(--brand-text); font-weight: 500; }
-    .dist-row__track  { height: 6px; background: var(--brand-light); border-radius: 4px; }
-    .dist-row__fill   { height: 100%; background: var(--brand); border-radius: 4px; }
-
-    /* ============================================================
-       Confirm Overlay
-    ============================================================ */
-    .overlay {
-      display: none;
-      position: absolute;
-      inset: 0;
-      background: rgba(0, 0, 0, 0.45);
-      z-index: 200;
-      align-items: flex-end;
-      border-radius: 34px;
-    }
-    .overlay.show { display: flex; }
-
-    .confirm-sheet {
-      background: var(--bg-card);
-      border-radius: 20px 20px 0 0;
-      padding: 24px 20px 32px;
-      width: 100%;
-    }
-    .confirm-icon {
-      width: 52px; height: 52px;
-      background: var(--brand-light);
-      border-radius: 50%;
-      display: flex; align-items: center; justify-content: center;
-      margin: 0 auto 14px;
-    }
-    .confirm-icon i { font-size: 26px; color: var(--brand); }
-    .confirm-title {
-      font-size: 17px;
-      font-weight: 500;
-      text-align: center;
-      color: var(--text-primary);
-      margin-bottom: 8px;
-    }
-    .confirm-body {
-      font-size: 13px;
-      text-align: center;
-      color: var(--text-secondary);
-      line-height: 1.6;
-      margin-bottom: 16px;
-    }
-    .confirm-summary {
-      background: var(--brand-light);
-      border-radius: var(--radius-sm);
-      padding: 10px 14px;
-      margin-bottom: 20px;
-      font-size: 12px;
-      color: var(--brand-text);
-      line-height: 1.8;
-    }
-    .confirm-btns { display: flex; gap: 10px; }
-    .confirm-btn {
-      flex: 1; height: 46px;
-      border-radius: var(--radius-sm);
-      font-size: 15px;
-      font-family: var(--font);
-      cursor: pointer;
-      transition: background 0.15s;
-      -webkit-tap-highlight-color: transparent;
-    }
-    .confirm-btn--cancel {
-      background: var(--bg-card);
-      border: 0.5px solid var(--border);
-      color: var(--text-secondary);
-    }
-    .confirm-btn--ok {
-      background: var(--brand);
-      border: none;
-      color: white;
-      font-weight: 500;
-    }
-    .confirm-btn--ok:hover { background: var(--brand-dark); }
-
-    /* ============================================================
-       Toast
-    ============================================================ */
-    .toast {
-      display: none;
-      position: absolute;
-      top: 80px;
-      left: 50%;
-      transform: translateX(-50%);
-      background: #323232;
-      color: white;
-      font-size: 13px;
-      font-family: var(--font);
-      padding: 10px 18px;
-      border-radius: 20px;
-      z-index: 300;
-      white-space: nowrap;
-      gap: 6px;
-      align-items: center;
-    }
-    .toast.show { display: flex; }
-  </style>
+  @media (prefers-reduced-motion:reduce){*{transition:none !important;animation:none !important;}}
+  button:focus-visible,.task__head:focus-visible,.acc-head:focus-visible{outline:2px solid var(--primary);outline-offset:2px;}
+</style>
 </head>
 <body>
 
+<!-- ===== 内联 SVG 图标库 ===== -->
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <symbol id="i-back" viewBox="0 0 24 24"><path d="M15 5l-7 7 7 7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></symbol>
+  <symbol id="i-check" viewBox="0 0 24 24"><path d="M5 13l4 4 10-11" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></symbol>
+  <symbol id="i-chev" viewBox="0 0 24 24"><path d="M9 6l6 6-6 6" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></symbol>
+  <symbol id="i-info" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9" fill="none" stroke="currentColor" stroke-width="1.8"/><path d="M12 11v5" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/><circle cx="12" cy="7.6" r="1.1" fill="currentColor"/></symbol>
+  <symbol id="i-bot" viewBox="0 0 24 24"><rect x="5" y="8" width="14" height="11" rx="3" fill="none" stroke="currentColor" stroke-width="1.8"/><path d="M12 8V5M9 19v2M15 19v2" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/><circle cx="9.5" cy="13" r="1.2" fill="currentColor"/><circle cx="14.5" cy="13" r="1.2" fill="currentColor"/></symbol>
+  <symbol id="i-bolt" viewBox="0 0 24 24"><path d="M13 3L5 13h5l-1 8 8-10h-5z" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/></symbol>
+  <symbol id="i-clock" viewBox="0 0 24 24"><circle cx="12" cy="12" r="8.5" fill="none" stroke="currentColor" stroke-width="1.8"/><path d="M12 7.5V12l3 2" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></symbol>
+  <symbol id="i-cog" viewBox="0 0 24 24"><circle cx="12" cy="12" r="3" fill="none" stroke="currentColor" stroke-width="1.8"/><path d="M12 3v2.5M12 18.5V21M3 12h2.5M18.5 12H21M5.6 5.6l1.8 1.8M16.6 16.6l1.8 1.8M18.4 5.6l-1.8 1.8M7.4 16.6l-1.8 1.8" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></symbol>
+  <symbol id="t-moments" viewBox="0 0 24 24"><rect x="4" y="5" width="16" height="14" rx="3" fill="none" stroke="currentColor" stroke-width="1.8"/><circle cx="9" cy="10" r="1.6" fill="none" stroke="currentColor" stroke-width="1.6"/><path d="M5 17l4-4 3 3 3-3 4 4" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></symbol>
+  <symbol id="t-article" viewBox="0 0 24 24"><rect x="5" y="4" width="14" height="16" rx="2" fill="none" stroke="currentColor" stroke-width="1.8"/><path d="M8 9h8M8 12.5h8M8 16h5" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></symbol>
+  <symbol id="t-video" viewBox="0 0 24 24"><circle cx="12" cy="12" r="8" fill="none" stroke="currentColor" stroke-width="1.8"/><path d="M10.5 9.2l5 2.8-5 2.8z" fill="currentColor"/></symbol>
+  <symbol id="t-search" viewBox="0 0 24 24"><circle cx="11" cy="11" r="6" fill="none" stroke="currentColor" stroke-width="1.8"/><path d="M15.5 15.5L20 20" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></symbol>
+  <symbol id="t-look" viewBox="0 0 24 24"><path d="M3 12s3.5-6 9-6 9 6 9 6-3.5 6-9 6-9-6-9-6z" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/><circle cx="12" cy="12" r="2.4" fill="none" stroke="currentColor" stroke-width="1.8"/></symbol>
+  <symbol id="t-like" viewBox="0 0 24 24"><path d="M12 20s-7-4.5-7-9.5A4 4 0 0 1 12 7a4 4 0 0 1 7 3.5C19 15.5 12 20 12 20z" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/></symbol>
+  <symbol id="i-signal" viewBox="0 0 18 12"><rect x="0" y="8" width="3" height="4" rx="1" fill="currentColor"/><rect x="5" y="5" width="3" height="7" rx="1" fill="currentColor"/><rect x="10" y="2" width="3" height="10" rx="1" fill="currentColor"/><rect x="15" y="0" width="3" height="12" rx="1" fill="currentColor" opacity=".35"/></symbol>
+  <symbol id="i-batt" viewBox="0 0 26 12"><rect x="0.5" y="0.5" width="22" height="11" rx="3" fill="none" stroke="currentColor"/><rect x="2.5" y="2.5" width="15" height="7" rx="1.5" fill="currentColor"/><rect x="24" y="3.5" width="2" height="5" rx="1" fill="currentColor"/></symbol>
+</svg>
+
 <div class="phone">
-  <!-- Status Bar -->
-  <div class="status-bar">
-    <span class="status-time" id="js-time">9:41</span>
-    <div class="status-icons">
-      <i class="ti ti-wifi"></i>
-      <i class="ti ti-battery-2"></i>
+  <div class="statusbar">
+    <span>9:41</span>
+    <span class="dots"><svg width="18" height="12"><use href="#i-signal"/></svg><svg width="26" height="12"><use href="#i-batt"/></svg></span>
+  </div>
+
+  <div class="nav nav--center">
+    <button class="nav__back" aria-label="返回"><svg width="22" height="22"><use href="#i-back"/></svg></button>
+    <div class="nav__title">养号策略</div>
+    <span class="nav__back nav__back--ph" aria-hidden="true"></span>
+  </div>
+
+  <div class="body">
+    <!-- 1. 数据统计 -->
+    <div class="sec-h"><span class="sec-h__t">今日数据（6 月 13 日）</span></div>
+    <div class="ov-bar">
+      <div class="cell"><span class="ico"><svg width="16" height="16"><use href="#i-bot"/></svg></span><span><span class="v" id="ovAcc">0</span><div class="k">AI 账号</div></span></div>
+      <div class="cell"><span class="ico"><svg width="16" height="16"><use href="#i-bolt"/></svg></span><span><span class="v" id="ovTotal">0</span><div class="k">养号行为</div></span></div>
+    </div>
+    <div class="metric-grid" id="metricGrid"></div>
+
+    <!-- 2. 当前执行中的养号策略 -->
+    <div class="sec-h"><span class="sec-h__t">执行中的养号策略</span></div>
+    <div class="active" id="activeCard"></div>
+
+    <!-- 3. 历史数据（折叠列表） -->
+    <div class="sec-h"><span class="sec-h__t">历史数据</span><span class="sec-h__hint">近 7 日</span></div>
+    <div class="date-acc" id="dateAcc"></div>
+  </div>
+
+  <!-- 底部：策略设置 -->
+  <div class="footer">
+    <button class="submit" id="openCfg"><svg width="18" height="18"><use href="#i-cog"/></svg>策略设置</button>
+  </div>
+
+  <!-- 策略设置：独立页面 -->
+  <div class="page" id="cfgPage">
+    <div class="statusbar">
+      <span>9:41</span>
+      <span class="dots"><svg width="18" height="12"><use href="#i-signal"/></svg><svg width="26" height="12"><use href="#i-batt"/></svg></span>
+    </div>
+    <div class="nav nav--center">
+      <button class="nav__back" id="cfgBack" aria-label="返回"><svg width="22" height="22"><use href="#i-back"/></svg></button>
+      <div class="nav__title">养号策略设置</div>
+      <span class="nav__back nav__back--ph" aria-hidden="true"></span>
+    </div>
+    <div class="cfg-scroll">
+      <div class="note">
+        <span class="note__ico"><svg width="18" height="18"><use href="#i-info"/></svg></span>
+        <span class="note__txt">可按顺序从任务列表中选择需要执行的任务，并配置执行数量</span>
+      </div>
+      <div class="sec-h" style="margin-top:0"><span class="sec-h__t">养号任务<span class="pill-count" id="selCount">0</span></span><span class="sec-h__hint">按勾选顺序自动执行</span></div>
+      <div class="list" id="taskList"></div>
+      <div class="interval-card" id="intervalCard" style="display:none">
+        <div class="interval-card__top">
+          <span><span class="field__label">执行间隔</span><span class="field__hint">对所有勾选任务统一生效，区间内随机取值</span></span>
+          <span class="interval__val" id="gVal">3–7 分钟</span>
+        </div>
+        <div class="dual">
+          <div class="dual__rail"></div>
+          <div class="dual__fill" id="gFill"></div>
+          <input type="range" min="0" max="10" step="1" value="3" id="gMin">
+          <input type="range" min="0" max="10" step="1" value="7" id="gMax">
+        </div>
+        <div class="dual__ticks"><span>0</span><span>5 分钟</span><span>10</span></div>
+      </div>
+    </div>
+    <div class="footer">
+      <button class="submit" id="cfgSave"><svg width="18" height="18"><use href="#i-check"/></svg>保存策略</button>
     </div>
   </div>
 
-  <!-- ============================================================
-       SCREEN: HOME
-  ============================================================ -->
-  <section class="screen active" id="screen-home" aria-label="概览">
-    <header class="header">
-      <div class="header__top">
-        <h1 class="header__title">AI 养号策略</h1>
-        <span class="badge-running">运行中</span>
-      </div>
-      <p class="header__sub">上次更新：今天 10:30</p>
-    </header>
-
-    <div class="scroll">
-      <div class="banner">
-        <i class="ti ti-info-circle"></i>
-        <p class="banner__text">
-          <strong>当前执行规则</strong>：每次从 6 个任务中随机执行 <strong>4 个</strong>，任务按顺序依次运行，每步间隔随机 <strong>3–7 分钟</strong>
-        </p>
-      </div>
-
-      <p class="sec-label">今日统计</p>
-      <div class="stat-grid">
-        <div class="stat-card">
-          <p class="stat-card__label">刷短视频</p>
-          <p class="stat-card__val">47</p>
-          <p class="stat-card__sub">条 / 今天</p>
-        </div>
-        <div class="stat-card">
-          <p class="stat-card__label">搜一搜查询</p>
-          <p class="stat-card__val">12</p>
-          <p class="stat-card__sub">次 / 今天</p>
-        </div>
-        <div class="stat-card">
-          <p class="stat-card__label">朋友圈点赞</p>
-          <p class="stat-card__val">8</p>
-          <p class="stat-card__sub">条 / 今天</p>
-        </div>
-        <div class="stat-card">
-          <p class="stat-card__label">执行轮次</p>
-          <p class="stat-card__val">6</p>
-          <p class="stat-card__sub">次 / 今天</p>
-        </div>
-      </div>
-
-      <p class="sec-label">已选任务（4/6）</p>
-      <div class="order-task"><div class="order-task__badge">1</div><p class="order-task__name">发布生活化朋友圈</p><span class="order-task__qty">1 条</span></div>
-      <div class="order-task"><div class="order-task__badge">2</div><p class="order-task__name">随机刷朋友圈点赞</p><span class="order-task__qty">≥ 3 条</span></div>
-      <div class="order-task"><div class="order-task__badge">3</div><p class="order-task__name">刷任意短视频</p><span class="order-task__qty">≥ 3 条</span></div>
-      <div class="order-task"><div class="order-task__badge">4</div><p class="order-task__name">使用搜一搜</p><span class="order-task__qty">≥ 3 次</span></div>
-
-      <p class="sec-label" style="margin-top:4px">近7天短视频记录</p>
-      <div class="card" style="padding:14px">
-        <div class="bar-row"><p class="bar-row__day">周一</p><div class="bar-row__track"><div class="bar-row__fill" style="width:65%"></div></div><p class="bar-row__num">39</p></div>
-        <div class="bar-row"><p class="bar-row__day">周二</p><div class="bar-row__track"><div class="bar-row__fill" style="width:78%"></div></div><p class="bar-row__num">47</p></div>
-        <div class="bar-row"><p class="bar-row__day">周三</p><div class="bar-row__track"><div class="bar-row__fill" style="width:55%"></div></div><p class="bar-row__num">33</p></div>
-        <div class="bar-row"><p class="bar-row__day">周四</p><div class="bar-row__track"><div class="bar-row__fill" style="width:90%"></div></div><p class="bar-row__num">54</p></div>
-        <div class="bar-row"><p class="bar-row__day">周五</p><div class="bar-row__track"><div class="bar-row__fill" style="width:70%"></div></div><p class="bar-row__num">42</p></div>
-        <div class="bar-row"><p class="bar-row__day">周六</p><div class="bar-row__track"><div class="bar-row__fill" style="width:83%"></div></div><p class="bar-row__num">50</p></div>
-        <div class="bar-row"><p class="bar-row__day">今天</p><div class="bar-row__track"><div class="bar-row__fill" style="width:78%"></div></div><p class="bar-row__num">47</p></div>
-      </div>
-    </div>
-
-    <nav class="tab-nav">
-      <div class="tab-item active" onclick="showScreen('home')" role="button"><i class="ti ti-home"></i>概览</div>
-      <div class="tab-item" onclick="showScreen('tasks')" role="button"><i class="ti ti-list-check"></i>任务配置</div>
-      <div class="tab-item" onclick="showScreen('stats')" role="button"><i class="ti ti-chart-bar"></i>数据统计</div>
-    </nav>
-  </section>
-
-  <!-- ============================================================
-       SCREEN: TASKS CONFIG
-  ============================================================ -->
-  <section class="screen" id="screen-tasks" aria-label="任务配置">
-    <header class="header">
-      <div class="header__top">
-        <h1 class="header__title">任务配置</h1>
-        <span class="badge-count badge-count--ok" id="sel-count">已选 4/6</span>
-      </div>
-      <p class="header__sub">选中的任务将按顺序依次执行</p>
-    </header>
-
-    <div class="scroll">
-      <div class="banner">
-        <i class="ti ti-alert-circle"></i>
-        <p class="banner__text">可按顺序从任务列表中选择需要执行的任务，并配置执行数量</p>
-      </div>
-
-      <p class="sec-label">选择执行任务</p>
-      <div class="card">
-        <div class="task-wrap" id="task-list"></div>
-      </div>
-
-      <p class="sec-label" style="margin-top:4px">执行间隔时间</p>
-      <div class="card" style="padding:14px">
-        <div class="interval-header">
-          <p class="interval-title">任务间隔时间范围</p>
-          <span class="interval-badge" id="interval-display">3 – 7 分钟</span>
-        </div>
-        <p class="interval-hint">将在此区间内随机选取间隔，模拟真实操作节奏</p>
-        <div class="dual-range" id="dual-range">
-          <div class="dual-range__track">
-            <div class="dual-range__fill" id="range-fill"></div>
-          </div>
-          <input type="range" id="range-min" min="0" max="10" value="3" step="1" aria-label="最小间隔">
-          <input type="range" id="range-max" min="0" max="10" value="7" step="1" aria-label="最大间隔">
-        </div>
-        <div class="interval-scale"><span>0 分钟</span><span>10 分钟</span></div>
-      </div>
-    </div>
-
-    <div class="bottom-action">
-      <button class="btn-primary" id="save-btn" onclick="showConfirm()">
-        <i class="ti ti-player-play"></i> 执行策略
-      </button>
-    </div>
-
-    <nav class="tab-nav">
-      <div class="tab-item" onclick="showScreen('home')" role="button"><i class="ti ti-home"></i>概览</div>
-      <div class="tab-item active" onclick="showScreen('tasks')" role="button"><i class="ti ti-list-check"></i>任务配置</div>
-      <div class="tab-item" onclick="showScreen('stats')" role="button"><i class="ti ti-chart-bar"></i>数据统计</div>
-    </nav>
-  </section>
-
-  <!-- ============================================================
-       SCREEN: STATS
-  ============================================================ -->
-  <section class="screen" id="screen-stats" aria-label="数据统计">
-    <header class="header">
-      <div class="header__top">
-        <h1 class="header__title">数据统计</h1>
-        <span class="week-badge">本周 ▾</span>
-      </div>
-      <p class="header__sub">AI 养号任务执行记录</p>
-    </header>
-
-    <div class="scroll">
-      <p class="sec-label">短视频刷视频记录</p>
-      <div class="card" style="padding:14px">
-        <div style="display:flex;justify-content:space-between;align-items:baseline;margin-bottom:14px">
-          <p style="font-size:22px;font-weight:500;color:var(--brand)">318 <span style="font-size:13px;font-weight:400;color:var(--text-secondary)">条本周</span></p>
-          <span class="trend-up">↑ 12% vs 上周</span>
-        </div>
-        <div class="bar-row"><p class="bar-row__day">周一</p><div class="bar-row__track"><div class="bar-row__fill" style="width:65%"></div></div><p class="bar-row__num">39</p></div>
-        <div class="bar-row"><p class="bar-row__day">周二</p><div class="bar-row__track"><div class="bar-row__fill" style="width:78%"></div></div><p class="bar-row__num">47</p></div>
-        <div class="bar-row"><p class="bar-row__day">周三</p><div class="bar-row__track"><div class="bar-row__fill" style="width:55%"></div></div><p class="bar-row__num">33</p></div>
-        <div class="bar-row"><p class="bar-row__day">周四</p><div class="bar-row__track"><div class="bar-row__fill" style="width:90%"></div></div><p class="bar-row__num">54</p></div>
-        <div class="bar-row"><p class="bar-row__day">周五</p><div class="bar-row__track"><div class="bar-row__fill" style="width:70%"></div></div><p class="bar-row__num">42</p></div>
-        <div class="bar-row"><p class="bar-row__day">周六</p><div class="bar-row__track"><div class="bar-row__fill" style="width:83%"></div></div><p class="bar-row__num">50</p></div>
-        <div class="bar-row"><p class="bar-row__day">今天</p><div class="bar-row__track"><div class="bar-row__fill" style="width:88%"></div></div><p class="bar-row__num">53</p></div>
-      </div>
-
-      <p class="sec-label">搜一搜查询记录</p>
-      <div class="card" style="padding:14px">
-        <div style="display:flex;justify-content:space-between;align-items:baseline;margin-bottom:14px">
-          <p style="font-size:22px;font-weight:500;color:var(--brand)">74 <span style="font-size:13px;font-weight:400;color:var(--text-secondary)">次本周</span></p>
-          <span class="trend-up">↑ 8% vs 上周</span>
-        </div>
-        <div class="bar-row"><p class="bar-row__day">周一</p><div class="bar-row__track"><div class="bar-row__fill" style="width:60%"></div></div><p class="bar-row__num">9</p></div>
-        <div class="bar-row"><p class="bar-row__day">周二</p><div class="bar-row__track"><div class="bar-row__fill" style="width:80%"></div></div><p class="bar-row__num">12</p></div>
-        <div class="bar-row"><p class="bar-row__day">周三</p><div class="bar-row__track"><div class="bar-row__fill" style="width:67%"></div></div><p class="bar-row__num">10</p></div>
-        <div class="bar-row"><p class="bar-row__day">周四</p><div class="bar-row__track"><div class="bar-row__fill" style="width:93%"></div></div><p class="bar-row__num">14</p></div>
-        <div class="bar-row"><p class="bar-row__day">周五</p><div class="bar-row__track"><div class="bar-row__fill" style="width:73%"></div></div><p class="bar-row__num">11</p></div>
-        <div class="bar-row"><p class="bar-row__day">周六</p><div class="bar-row__track"><div class="bar-row__fill" style="width:53%"></div></div><p class="bar-row__num">8</p></div>
-        <div class="bar-row"><p class="bar-row__day">今天</p><div class="bar-row__track"><div class="bar-row__fill" style="width:80%"></div></div><p class="bar-row__num">12</p></div>
-      </div>
-
-      <p class="sec-label">执行任务分布</p>
-      <div class="card" style="padding:14px">
-        <div class="dist-row"><div class="dist-row__header"><span>朋友圈发布</span><span class="dist-row__count">42 次</span></div><div class="dist-row__track"><div class="dist-row__fill" style="width:52%"></div></div></div>
-        <div class="dist-row"><div class="dist-row__header"><span>朋友圈点赞</span><span class="dist-row__count">56 次</span></div><div class="dist-row__track"><div class="dist-row__fill" style="width:70%"></div></div></div>
-        <div class="dist-row"><div class="dist-row__header"><span>刷短视频</span><span class="dist-row__count">80 次</span></div><div class="dist-row__track"><div class="dist-row__fill" style="width:100%"></div></div></div>
-        <div class="dist-row"><div class="dist-row__header"><span>搜一搜</span><span class="dist-row__count">74 次</span></div><div class="dist-row__track"><div class="dist-row__fill" style="width:92%"></div></div></div>
-        <div class="dist-row"><div class="dist-row__header"><span>小程序</span><span class="dist-row__count">28 次</span></div><div class="dist-row__track"><div class="dist-row__fill" style="width:35%"></div></div></div>
-      </div>
-    </div>
-
-    <nav class="tab-nav">
-      <div class="tab-item" onclick="showScreen('home')" role="button"><i class="ti ti-home"></i>概览</div>
-      <div class="tab-item" onclick="showScreen('tasks')" role="button"><i class="ti ti-list-check"></i>任务配置</div>
-      <div class="tab-item active" onclick="showScreen('stats')" role="button"><i class="ti ti-chart-bar"></i>数据统计</div>
-    </nav>
-  </section>
-
-  <!-- ============================================================
-       Confirm Overlay
-  ============================================================ -->
-  <div class="overlay" id="confirm-overlay" role="dialog" aria-modal="true" aria-label="确认执行策略">
-    <div class="confirm-sheet">
-      <div class="confirm-icon"><i class="ti ti-player-play"></i></div>
-      <h2 class="confirm-title">确认执行策略？</h2>
-      <p class="confirm-body">确认后将立即按新策略运行，所有 AI 机器人账号将应用本次配置。</p>
-      <div class="confirm-summary" id="confirm-summary"></div>
-      <div class="confirm-btns">
-        <button class="confirm-btn confirm-btn--cancel" onclick="closeConfirm()">再想想</button>
-        <button class="confirm-btn confirm-btn--ok" onclick="doSave()">确认执行</button>
-      </div>
+  <!-- 二次确认弹层 -->
+  <div class="mask mask--confirm" id="mask"></div>
+  <div class="sheet sheet--confirm" id="sheet">
+    <div class="sheet__grip"></div>
+    <div class="sheet__h"><h3>确认提交养号策略</h3><p>机器人将按以下顺序循环执行，间隔时间在区间内随机取值</p></div>
+    <div class="sheet__list" id="confirmList"></div>
+    <div class="sheet__foot">
+      <button class="btn-ghost" id="cancelBtn">再改改</button>
+      <button class="btn-primary" id="confirmBtn">确认提交</button>
     </div>
   </div>
 
-  <!-- Toast -->
-  <div class="toast" id="toast" role="status">
-    <i class="ti ti-circle-check" style="color:#4CAF50"></i>
-    策略已执行并生效
-  </div>
+  <div class="toast" id="toast"><svg width="16" height="16"><use href="#i-check"/></svg><span>策略已更新，将于下一周期生效</span></div>
 </div>
 
 <script>
-  /* ============================================================
-     Data
-  ============================================================ */
-  var tasks = [
-    { name: '发布生活化朋友圈', meta: '记录日常内容，保持活跃度',          qtyLabel: '每轮发布条数', qtyMin: 1, qtyMax: 10, qty: 1, prefix: '',    suffix: '条', checked: true  },
-    { name: '随机刷朋友圈点赞', meta: '提升好友互动活跃度',                 qtyLabel: '最少点赞条数', qtyMin: 1, qtyMax: 20, qty: 3, prefix: '≥ ', suffix: '条', checked: true  },
-    { name: '浏览公众号文章',   meta: '模拟内容消费行为',                   qtyLabel: '最少浏览条数', qtyMin: 1, qtyMax: 20, qty: 3, prefix: '≥ ', suffix: '条', checked: false },
-    { name: '刷任意短视频',     meta: '每条停留 ≥ 15 秒 · 记录每日条数',   qtyLabel: '最少刷视频条数', qtyMin: 1, qtyMax: 20, qty: 3, prefix: '≥ ', suffix: '条', checked: true  },
-    { name: '使用搜一搜',       meta: '查询任意内容 · 记录每日次数',        qtyLabel: '最少查询次数', qtyMin: 1, qtyMax: 20, qty: 3, prefix: '≥ ', suffix: '次', checked: true  },
-    { name: '使用小程序',       meta: '打开并使用任意小程序',               qtyLabel: '最少使用个数', qtyMin: 1, qtyMax: 20, qty: 3, prefix: '≥ ', suffix: '个', checked: false }
+(function(){
+  "use strict";
+  var RMAX = 10;
+  var GLOBAL = { min:3, max:7 };
+  var TASKS = [
+    {id:'moments', icon:'t-moments', name:'发布生活化朋友圈', desc:'随机发布图文动态',     unit:'条', geq:false, sel:false, count:1},
+    {id:'article', icon:'t-article', name:'浏览公众号文章',   desc:'阅读订阅号推送文章',   unit:'篇', geq:true,  sel:false, count:3},
+    {id:'video',   icon:'t-video',   name:'刷视频号',         desc:'浏览推荐短视频',       unit:'条', geq:false, sel:false, count:10},
+    {id:'search',  icon:'t-search',  name:'使用搜一搜查询',   desc:'模拟关键词搜索',       unit:'次', geq:false, sel:false, count:2},
+    {id:'look',    icon:'t-look',    name:'看一看浏览',       desc:'浏览朋友在看的内容',   unit:'篇', geq:false, sel:false, count:5},
+    {id:'like',    icon:'t-like',    name:'点赞与评论互动',   desc:'对好友动态进行互动',   unit:'次', geq:false, sel:false, count:3}
+  ];
+  function taskById(id){ return TASKS.filter(function(t){return t.id===id;})[0]; }
+  var DEF_COUNT = {}; TASKS.forEach(function(t){ DEF_COUNT[t.id] = t.count; }); // 原始默认数量
+  var PICK = [];
+
+  // 当前生效的策略（默认值 = 用户示例）
+  var ACTIVE = {
+    ids:['moments','video','look','like'],
+    counts:{moments:1, video:10, look:5, like:3},
+    min:3, max:7
+  };
+
+  /* ---------- 数据统计（今日 + 历史） ---------- */
+  var METRICS = [
+    {id:'video',   icon:'t-video',   name:'刷视频号',      short:'视频号',  sub:'浏览条数', unit:'条'},
+    {id:'search',  icon:'t-search',  name:'使用搜一搜',    short:'搜一搜',  sub:'查询次数', unit:'次'},
+    {id:'article', icon:'t-article', name:'浏览公众号',    short:'公众号',  sub:'阅读篇数', unit:'篇'},
+    {id:'moments', icon:'t-moments', name:'发布朋友圈',    short:'朋友圈',  sub:'发布条数', unit:'条'},
+    {id:'like',    icon:'t-like',    name:'点赞与评论',    short:'点赞评论',sub:'互动次数', unit:'次'}
+  ];
+  var DAYS = [
+    {label:'今天', date:'6/13', acc:8, data:[128,16,9,3,7],  trend:'较昨日 +12%，处于安全活跃区间'},
+    {label:'昨天', date:'6/12', acc:8, data:[112,14,8,2,6],  trend:'较前日 +5%，节奏平稳'},
+    {label:'周三', date:'6/11', acc:7, data:[106,12,7,3,5],  trend:'较前日 -3%，略有回落'},
+    {label:'周二', date:'6/10', acc:7, data:[120,15,10,2,8], trend:'较前日 +9%，活跃度较高'},
+    {label:'周一', date:'6/9',  acc:6, data:[98,11,6,1,4],   trend:'较前日 -8%，周一低谷'},
+    {label:'周日', date:'6/8',  acc:6, data:[88,9,5,2,3],    trend:'周末，行为量偏低'},
+    {label:'周六', date:'6/7',  acc:5, data:[92,10,6,2,4],   trend:'周末，行为量偏低'}
   ];
 
-  var rMin = 3, rMax = 7;
-
-  var STEP_LABELS = ['第一步', '第二步', '第三步', '第四步', '第五步', '第六步'];
-
-  /* ============================================================
-     Helpers
-  ============================================================ */
-  function checkedCount() {
-    return tasks.filter(function(t) { return t.checked; }).length;
+  var metricGrid = document.getElementById('metricGrid');
+  function buildToday(){
+    var d = DAYS[0];
+    document.getElementById('ovAcc').innerHTML = d.acc + '<small>个</small>';
+    document.getElementById('ovTotal').innerHTML = d.data.reduce(function(a,b){return a+b;},0) + '<small>次</small>';
+    metricGrid.innerHTML = METRICS.map(function(m,k){
+      return '<div class="metric">'+
+        '<span class="metric__ico"><svg width="16" height="16"><use href="#'+m.icon+'"/></svg></span>'+
+        '<span class="metric__txt">'+
+          '<span class="metric__v">'+d.data[k]+'<small>'+m.unit+'</small></span>'+
+          '<span class="metric__n" title="'+m.name+'">'+m.short+'</span>'+
+        '</span>'+
+      '</div>';
+    }).join('');
   }
 
-  function stepLabel(n) {
-    return STEP_LABELS[n - 1] || ('第' + n + '步');
+  var dateAcc = document.getElementById('dateAcc');
+  function metricRows(day){
+    var maxVal = Math.max.apply(null, day.data);
+    return METRICS.map(function(m,k){
+      var v = day.data[k], pct = Math.round(v/maxVal*100);
+      return '<div class="d-row">'+
+        '<span class="d-row__ico"><svg width="18" height="18"><use href="#'+m.icon+'"/></svg></span>'+
+        '<span class="d-row__name">'+m.name+'<small>'+m.sub+'</small><span class="bar"><i style="width:'+pct+'%"></i></span></span>'+
+        '<span class="d-row__val">'+v+'<span style="font-size:11px;color:var(--ink-3);font-weight:500"> '+m.unit+'</span></span>'+
+      '</div>';
+    }).join('');
+  }
+  function buildAccordion(){
+    var hist = DAYS.slice(1); // 排除今天，避免与顶部“今日数据”重复
+    dateAcc.innerHTML = hist.map(function(d,i){
+      var total = d.data.reduce(function(a,b){return a+b;},0);
+      return '<div class="acc-item">'+
+        '<div class="acc-head" data-acc="1">'+
+          '<span class="acc-date"><b>'+d.date+'</b><span>'+d.label+'</span></span>'+
+          '<span class="acc-sum"><b>'+d.acc+'</b>个账号 · <b>'+total+'</b>次行为</span>'+
+          '<span class="acc-chev"><svg width="20" height="20"><use href="#i-chev"/></svg></span>'+
+        '</div>'+
+        '<div class="acc-body"><div class="acc-inner"><p class="acc-trend">'+d.trend+'</p>'+metricRows(d)+'</div></div>'+
+      '</div>';
+    }).join('');
+  }
+  dateAcc.addEventListener('click', function(e){
+    var head = e.target.closest('[data-acc]');
+    if(head) head.parentNode.classList.toggle('is-open');
+  });
+
+  /* ---------- 当前执行中的策略 ---------- */
+  var activeCard = document.getElementById('activeCard');
+  function intervalText(mn,mx){ return mn===mx ? (mn+' 分钟') : (mn+'–'+mx+' 分钟'); }
+  function renderActive(){
+    if(!ACTIVE.ids.length){
+      activeCard.innerHTML = '<div class="active__top"><span class="active__title">执行中的养号策略</span></div>'+
+        '<div class="active__empty">暂未配置养号策略，点击下方“策略设置”开始配置。</div>';
+      return;
+    }
+    var items = ACTIVE.ids.map(function(id,idx){
+      return '<span class="active__item"><i>'+(idx+1)+'.</i>'+taskById(id).name+'</span>';
+    }).join('');
+    activeCard.innerHTML =
+      '<div class="active__top"><span class="active__dot"></span><span class="active__title">养号任务序列</span><span class="active__badge">执行中</span></div>'+
+      '<div class="active__seq">'+items+'</div>'+
+      '<div class="active__div"></div>'+
+      '<div class="active__intv"><svg width="15" height="15"><use href="#i-clock"/></svg>执行间隔 <b>'+intervalText(ACTIVE.min,ACTIVE.max)+'</b> 随机</div>';
   }
 
-  /* ============================================================
-     Screen Navigation
-  ============================================================ */
-  function showScreen(name) {
-    // Update screens
-    document.querySelectorAll('.screen').forEach(function(s) { s.classList.remove('active'); });
-    document.getElementById('screen-' + name).classList.add('active');
+  /* ---------- 配置弹窗：任务列表 ---------- */
+  var listEl = document.getElementById('taskList');
+  var selCount = document.getElementById('selCount');
+  var cfgSave = document.getElementById('cfgSave');
+  var intervalCard = document.getElementById('intervalCard');
+  var gFill = document.getElementById('gFill'), gVal = document.getElementById('gVal');
+  var gMin = document.getElementById('gMin'), gMax = document.getElementById('gMax');
 
-    // Update tab indicators in all nav bars
-    document.querySelectorAll('.tab-item').forEach(function(item) {
-      item.classList.remove('active');
-      if (item.getAttribute('onclick') && item.getAttribute('onclick').indexOf("'" + name + "'") !== -1) {
-        item.classList.add('active');
-      }
+  function render(){
+    var html='';
+    TASKS.forEach(function(t,i){
+      var n = t.sel ? (PICK.indexOf(t.id)+1) : 0;
+      html +=
+      '<div class="task'+(t.sel?' is-on':'')+'">'+
+        '<div class="task__head" data-toggle="'+i+'">'+
+          '<span class="task__ico"><svg width="22" height="22"><use href="#'+t.icon+'"/></svg></span>'+
+          '<span class="task__main"><span class="task__name"><span class="task__seq">'+n+'</span>'+t.name+'</span>'+
+            '<span class="task__desc">'+t.desc+'</span></span>'+
+          '<span class="task__check"><svg width="14" height="14"><use href="#i-check"/></svg></span>'+
+        '</div>'+
+        '<div class="task__panel"><div class="panel-inner"><div class="field">'+
+          '<span><span class="field__label">执行数量（'+t.unit+'）</span>'+(t.geq?'<span class="field__hint">至少执行该数量</span>':'')+'</span>'+
+          '<span class="stepper"><button data-dec="'+i+'" aria-label="减少">−</button>'+
+            '<span class="stepper__val">'+(t.geq?'<span class="geq">≥</span>':'')+'<b data-cv="'+i+'">'+t.count+'</b></span>'+
+            '<button data-inc="'+i+'" aria-label="增加">+</button></span>'+
+        '</div></div></div>'+
+      '</div>';
     });
+    listEl.innerHTML = html;
+    var c = TASKS.filter(function(t){return t.sel;}).length;
+    selCount.textContent = c;
+    intervalCard.style.display = c>0 ? '' : 'none';
+    cfgSave.disabled = c===0;
+    cfgSave.style.opacity = c===0 ? .5 : 1;
   }
 
-  /* ============================================================
-     Task List Render
-  ============================================================ */
-  function renderTasks() {
-    var list = document.getElementById('task-list');
-    var order = 0;
-    list.innerHTML = '';
+  listEl.addEventListener('click', function(e){
+    var head=e.target.closest('[data-toggle]'), dec=e.target.closest('[data-dec]'), inc=e.target.closest('[data-inc]');
+    if(dec){ stepCount(+dec.dataset.dec,-1); e.stopPropagation(); return; }
+    if(inc){ stepCount(+inc.dataset.inc,+1); e.stopPropagation(); return; }
+    if(head){
+      var i=+head.dataset.toggle, t=TASKS[i];
+      t.sel=!t.sel;
+      if(t.sel) PICK.push(t.id); else PICK.splice(PICK.indexOf(t.id),1);
+      render();
+    }
+  });
+  function stepCount(i,d){
+    var t=TASKS[i]; t.count=Math.max(1,Math.min(99,t.count+d));
+    var cv=listEl.querySelector('[data-cv="'+i+'"]'); if(cv) cv.textContent=t.count;
+    var db=listEl.querySelector('[data-dec="'+i+'"]'); if(db) db.disabled=t.count<=1;
+  }
 
-    tasks.forEach(function(t, i) {
-      if (t.checked) order++;
-      var currentOrder = t.checked ? order : 0;
+  function paintFill(){
+    gFill.style.left=(GLOBAL.min/RMAX*100)+'%';
+    gFill.style.width=((GLOBAL.max-GLOBAL.min)/RMAX*100)+'%';
+    gVal.textContent=intervalText(GLOBAL.min,GLOBAL.max);
+  }
+  function onSlide(which){
+    var mn=+gMin.value, mx=+gMax.value;
+    if(which==='min'&&mn>mx){mn=mx;gMin.value=mn;}
+    if(which==='max'&&mx<mn){mx=mn;gMax.value=mx;}
+    GLOBAL.min=mn; GLOBAL.max=mx;
+    gMin.style.zIndex=(mn>RMAX/2)?5:3; gMax.style.zIndex=(mn>RMAX/2)?3:4;
+    paintFill();
+  }
+  gMin.addEventListener('input',function(){onSlide('min');});
+  gMax.addEventListener('input',function(){onSlide('max');});
 
-      // Wrapper
-      var item = document.createElement('div');
-      item.className = 'task-item';
-
-      // Row
-      var row = document.createElement('div');
-      row.className = 'task-row';
-      row.setAttribute('role', 'checkbox');
-      row.setAttribute('aria-checked', t.checked ? 'true' : 'false');
-      row.onclick = (function(idx) { return function() { toggleTask(idx); }; })(i);
-
-      // Checkbox indicator
-      var chk = document.createElement('div');
-      chk.className = 'task-check' + (t.checked ? ' checked' : '');
-      chk.innerHTML = '<i class="ti ti-check"></i>';
-
-      // Info
-      var info = document.createElement('div');
-      info.className = 'task-info';
-      info.innerHTML = '<p class="task-info__name">' + t.name + '</p>' +
-                       '<p class="task-info__meta">' + t.meta + '</p>';
-
-      row.appendChild(chk);
-      row.appendChild(info);
-
-      // Step badge (only when checked)
-      if (t.checked) {
-        var badge = document.createElement('span');
-        badge.className = 'step-badge';
-        badge.textContent = stepLabel(currentOrder);
-        row.appendChild(badge);
-      }
-
-      item.appendChild(row);
-
-      // Qty expand
-      var expand = document.createElement('div');
-      expand.className = 'qty-expand' + (t.checked ? ' open' : '');
-      expand.id = 'qty-' + i;
-      expand.innerHTML =
-        '<div class="qty-inner">' +
-          '<div class="qty-label">' +
-            '<strong>' + t.qtyLabel + '</strong>' +
-            t.prefix + t.qty + ' ' + t.suffix +
-          '</div>' +
-          '<div class="stepper">' +
-            '<div class="stepper__btn" onclick="stepQty(' + i + ', -1)" role="button" aria-label="减少">−</div>' +
-            '<div class="stepper__val" id="qv-' + i + '">' + t.qty + '</div>' +
-            '<div class="stepper__btn" onclick="stepQty(' + i + ', 1)" role="button" aria-label="增加">+</div>' +
-          '</div>' +
-        '</div>';
-
-      item.appendChild(expand);
-      list.appendChild(item);
+  /* ---------- 工作态 <-> 生效态 ---------- */
+  function applyActiveToWorking(){
+    PICK = ACTIVE.ids.slice();
+    TASKS.forEach(function(t){
+      t.sel = ACTIVE.ids.indexOf(t.id) > -1;
+      if(ACTIVE.counts[t.id] != null) t.count = ACTIVE.counts[t.id];
     });
-
-    updateSelCount();
+    GLOBAL.min = ACTIVE.min; GLOBAL.max = ACTIVE.max;
+    gMin.value = ACTIVE.min; gMax.value = ACTIVE.max;
+    render(); paintFill();
+  }
+  function commitWorkingToActive(){
+    ACTIVE.ids = PICK.slice();
+    ACTIVE.counts = {};
+    PICK.forEach(function(id){ ACTIVE.counts[id] = taskById(id).count; });
+    ACTIVE.min = GLOBAL.min; ACTIVE.max = GLOBAL.max;
+    renderActive();
+  }
+  // 设置页默认无勾选：清空所有选择、数量回到默认、间隔回到默认
+  function resetWorking(){
+    PICK = [];
+    TASKS.forEach(function(t){ t.sel = false; t.count = DEF_COUNT[t.id]; });
+    GLOBAL.min = 1; GLOBAL.max = 3;
+    gMin.value = 1; gMax.value = 3;
+    render(); paintFill();
   }
 
-  function toggleTask(idx) {
-    // If trying to check but all tasks already checked, do nothing
-    if (!tasks[idx].checked && checkedCount() >= tasks.length) return;
-    tasks[idx].checked = !tasks[idx].checked;
-    renderTasks();
-  }
+  /* ---------- 弹窗控制 ---------- */
+  var cfgPage = document.getElementById('cfgPage');
+  function openCfg(){ resetWorking(); cfgPage.classList.add('show'); }
+  function closeCfg(){ cfgPage.classList.remove('show'); }
+  document.getElementById('openCfg').addEventListener('click', openCfg);
+  document.getElementById('cfgBack').addEventListener('click', closeCfg);
 
-  function stepQty(idx, delta) {
-    var t = tasks[idx];
-    t.qty = Math.max(t.qtyMin, Math.min(t.qtyMax, t.qty + delta));
-
-    var valEl = document.getElementById('qv-' + idx);
-    if (valEl) valEl.textContent = t.qty;
-
-    var labelEl = valEl ? valEl.closest('.qty-inner').querySelector('.qty-label') : null;
-    if (labelEl) labelEl.innerHTML = '<strong>' + t.qtyLabel + '</strong>' + t.prefix + t.qty + ' ' + t.suffix;
-  }
-
-  function updateSelCount() {
-    var n = checkedCount();
-    var el = document.getElementById('sel-count');
-    el.textContent = '已选 ' + n + '/' + tasks.length;
-    el.className = 'badge-count ' + (n > 0 ? 'badge-count--ok' : 'badge-count--warn');
-    document.getElementById('save-btn').disabled = (n === 0);
-  }
-
-  /* ============================================================
-     Dual Range Slider
-  ============================================================ */
-  function updateRangeFill() {
-    var fill = document.getElementById('range-fill');
-    fill.style.left  = (rMin / 10 * 100) + '%';
-    fill.style.width = ((rMax - rMin) / 10 * 100) + '%';
-    document.getElementById('interval-display').textContent = rMin + ' – ' + rMax + ' 分钟';
-  }
-
-  function initDualRange() {
-    var elMin = document.getElementById('range-min');
-    var elMax = document.getElementById('range-max');
-
-    elMin.addEventListener('input', function() {
-      rMin = parseInt(this.value);
-      if (rMin >= rMax) { rMin = rMax - 1; this.value = rMin; }
-      updateRangeFill();
+  var mask=document.getElementById('mask'), sheet=document.getElementById('sheet'), confirmList=document.getElementById('confirmList');
+  function openConfirm(){
+    var html='';
+    PICK.forEach(function(id,idx){
+      var t=taskById(id);
+      html+='<div class="srow"><span class="srow__seq">'+(idx+1)+'</span><span class="srow__name">'+t.name+'</span>'+
+        '<span class="srow__meta">'+(t.geq?'≥ ':'')+'<b>'+t.count+'</b> '+t.unit+'</span></div>';
     });
-    elMax.addEventListener('input', function() {
-      rMax = parseInt(this.value);
-      if (rMax <= rMin) { rMax = rMin + 1; this.value = rMax; }
-      updateRangeFill();
-    });
-
-    updateRangeFill();
+    html+='<div class="srow srow--interval"><span class="srow__name">统一执行间隔</span>'+
+      '<span class="srow__meta"><b>'+intervalText(GLOBAL.min,GLOBAL.max)+'</b> · 区间随机</span></div>';
+    confirmList.innerHTML=html;
+    mask.classList.add('show'); sheet.classList.add('show');
   }
+  function closeConfirm(){ mask.classList.remove('show'); sheet.classList.remove('show'); }
+  cfgSave.addEventListener('click', function(){ if(!cfgSave.disabled) openConfirm(); });
+  mask.addEventListener('click', closeConfirm);
+  document.getElementById('cancelBtn').addEventListener('click', closeConfirm);
+  document.getElementById('confirmBtn').addEventListener('click', function(){
+    commitWorkingToActive();
+    closeConfirm(); closeCfg();
+    var toast=document.getElementById('toast');
+    toast.classList.add('show');
+    setTimeout(function(){ toast.classList.remove('show'); }, 2200);
+  });
 
-  /* ============================================================
-     Confirm Overlay
-  ============================================================ */
-  function showConfirm() {
-    if (checkedCount() === 0) return;
-
-    var order = 0;
-    var lines = tasks
-      .filter(function(t) { return t.checked; })
-      .map(function(t) {
-        order++;
-        return stepLabel(order) + '：' + t.name + '（' + t.prefix + t.qty + t.suffix + '）';
-      })
-      .join('<br>');
-
-    document.getElementById('confirm-summary').innerHTML =
-      '间隔 ' + rMin + '–' + rMax + ' 分钟（随机）<br><br>' + lines;
-
-    document.getElementById('confirm-overlay').classList.add('show');
-  }
-
-  function closeConfirm() {
-    document.getElementById('confirm-overlay').classList.remove('show');
-  }
-
-  function doSave() {
-    closeConfirm();
-    var t = document.getElementById('toast');
-    t.classList.add('show');
-    setTimeout(function() { t.classList.remove('show'); }, 2500);
-  }
-
-  /* ============================================================
-     Real-time Clock
-  ============================================================ */
-  function updateClock() {
-    var now = new Date();
-    var h = now.getHours();
-    var m = now.getMinutes();
-    document.getElementById('js-time').textContent =
-      h + ':' + (m < 10 ? '0' + m : m);
-  }
-  updateClock();
-  setInterval(updateClock, 10000);
-
-  /* ============================================================
-     Init
-  ============================================================ */
-  renderTasks();
-  initDualRange();
+  /* ---------- 初始化 ---------- */
+  buildToday();
+  buildAccordion();
+  renderActive();
+})();
 </script>
 </body>
 </html>
