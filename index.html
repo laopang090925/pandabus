@@ -34,7 +34,7 @@
   .nav__title{font-size:18px;font-weight:600;letter-spacing:.2px;flex:1;text-align:center;}
 
   /* ============ 内容滚动区 ============ */
-  .body{flex:1;overflow-y:auto;-webkit-overflow-scrolling:touch;padding:6px 16px 110px;}
+  .body{flex:1;overflow-y:auto;-webkit-overflow-scrolling:touch;padding:6px 16px 30px;}
   .body::-webkit-scrollbar{display:none;}
 
   .sec-h{display:flex;align-items:baseline;justify-content:space-between;margin:18px 2px 12px;}
@@ -115,8 +115,10 @@
   .sheet.show{transform:translateY(0);}
   .sheet--confirm{z-index:46;max-height:84%;}
   /* 策略设置整页（从右滑入） */
-  .page{position:absolute;inset:0;background:var(--page);z-index:38;transform:translateX(100%);transition:transform .3s cubic-bezier(.22,.61,.36,1);display:flex;flex-direction:column;}
-  .page.show{transform:translateX(0);}
+  .cfg-entry{display:inline-flex;align-items:center;gap:5px;border:1.5px solid var(--primary);background:none;color:var(--primary);font-size:12.5px;font-weight:700;cursor:pointer;padding:4px 11px;border-radius:8px;letter-spacing:.1px;}
+  .cfg-entry:active{background:var(--primary-soft);}
+  .page{position:absolute;inset:0;background:var(--page);z-index:38;display:none;}
+  .page.show{display:flex;flex-direction:column;}
   .sheet__grip{width:38px;height:4px;border-radius:4px;background:var(--line-2);margin:10px auto 4px;}
   .sheet__h{padding:8px 20px 4px;}
   .sheet__h h3{margin:0;font-size:17px;font-weight:600;}
@@ -195,6 +197,153 @@
 
   @media (prefers-reduced-motion:reduce){*{transition:none !important;animation:none !important;}}
   button:focus-visible,.task__head:focus-visible,.acc-head:focus-visible{outline:2px solid var(--primary);outline-offset:2px;}
+
+  /* ===== 终极版新增 ===== */
+  /* 风控告警条 */
+  .alert{display:flex;align-items:center;gap:9px;background:#FFF4E5;border:1px solid #F6D9A8;border-radius:var(--radius-sm);padding:10px 12px;margin:6px 0 12px;}
+  .alert__ico{color:#C77700;flex:0 0 auto;display:flex;}
+  .alert__txt{flex:1;font-size:12.5px;line-height:1.5;color:#8A5A00;}
+  .alert__x{flex:0 0 auto;border:none;background:transparent;color:#B98A3A;font-size:18px;line-height:1;cursor:pointer;padding:0 2px;}
+
+  /* 账号 cell 可点 + 异常 */
+  .cell--tap{cursor:pointer;border-radius:10px;transition:background .15s;position:relative;}
+  .cell--tap:active{background:#FAFBFC;}
+  .cell__chev{color:var(--ink-3);margin-left:auto;flex:0 0 auto;display:flex;align-self:center;}
+  .acc-abn{display:none;align-items:center;font-size:11px;font-weight:700;color:#C0392B;background:#FDECEA;border-radius:6px;padding:0 5px;margin-left:2px;}
+  .acc-abn.show{display:inline-flex;}
+
+  /* 今日任务卡：环比 */
+  .metric__d{font-size:10px;font-weight:700;display:inline-flex;align-items:center;gap:1px;margin-left:4px;}
+  .metric__d svg{width:9px;height:9px;}
+  .metric__d.up{color:#1F9D6B;} .metric__d.down{color:#C0392B;}
+
+  /* 执行中策略卡增强 */
+  .active__ctrl{display:flex;align-items:center;justify-content:space-between;margin-bottom:12px;}
+  .active__status{display:flex;align-items:center;gap:8px;}
+  .status-pill{display:inline-flex;align-items:center;gap:6px;font-size:12px;font-weight:700;color:var(--primary-dark);}
+  .active__toggle{display:inline-flex;align-items:center;gap:5px;height:30px;padding:0 13px;border-radius:20px;border:1px solid var(--primary-line);background:#fff;color:var(--primary-dark);font-size:12px;font-weight:600;cursor:pointer;}
+  .active__toggle:active{background:var(--primary-soft);}
+  .active__prog{background:#fff;border:1px solid #F2E4D6;border-radius:10px;padding:10px 12px;margin-bottom:12px;}
+  .active__prog-top{display:flex;align-items:center;justify-content:space-between;font-size:12px;margin-bottom:7px;}
+  .active__prog-cur{color:var(--ink);font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+  .active__prog-cur b{color:var(--primary-dark);}
+  .active__prog-bar{height:5px;border-radius:5px;background:var(--track);overflow:hidden;}
+  .active__prog-bar i{display:block;height:100%;background:var(--primary);border-radius:5px;transition:width .4s ease;}
+  .active.flash{animation:flash 1s ease;}
+  @keyframes flash{0%{box-shadow:0 0 0 0 rgba(221,107,32,.5);}100%{box-shadow:0 0 0 10px rgba(221,107,32,0);}}
+
+  /* 账号清单分组标题 */
+  .acc-group-h{display:flex;align-items:center;justify-content:space-between;padding:14px 0 8px;font-size:12px;font-weight:700;color:var(--ink-3);letter-spacing:.3px;}
+  .acc-group-h:first-child{padding-top:4px;}
+  .acc-group-c{font-weight:500;color:var(--primary-dark);background:var(--primary-soft);border-radius:6px;padding:1px 7px;}
+  .acc-tags{display:flex;flex-wrap:wrap;gap:8px;padding-bottom:14px;border-bottom:1px solid var(--line);}
+  .acc-tags:last-child{border-bottom:none;}
+  .acc-tag{display:inline-flex;align-items:center;gap:4px;padding:6px 10px;border-radius:20px;background:#F4F6F8;font-size:12.5px;font-weight:500;color:var(--ink);}
+  .acc-tag svg{color:var(--primary);}
+
+  /* 账号清单行 */
+  .arow{display:flex;align-items:center;gap:11px;padding:12px 0;border-bottom:1px solid var(--line);}
+  .arow:last-child{border-bottom:none;}
+  .arow__ava{width:34px;height:34px;border-radius:10px;background:var(--primary-soft);color:var(--primary);display:flex;align-items:center;justify-content:center;flex:0 0 auto;}
+  .arow__name{flex:1;font-size:14px;font-weight:500;}
+  .arow__name small{display:block;font-size:11px;color:var(--ink-3);font-weight:400;}
+  .arow__tag{font-size:11px;font-weight:700;padding:3px 9px;border-radius:20px;}
+  .arow__tag.ok{color:#1F9D6B;background:#E8F6EF;}
+  .arow__tag.warn{color:#C0392B;background:#FDECEA;}
+
+  /* 间隔安全提示 */
+  .intv-warn{display:flex;align-items:center;gap:6px;font-size:11.5px;color:#C77700;margin-top:10px;line-height:1.4;}
+  .intv-warn svg{color:#C77700;flex:0 0 auto;}
+
+  /* 开始时间 */
+  .start-card{background:var(--surface);border:1px solid var(--line);border-radius:var(--radius);padding:12px;}
+  .seg{display:flex;background:#F2F4F7;border-radius:10px;padding:3px;gap:3px;}
+  .seg__btn{flex:1;height:34px;border:none;background:transparent;border-radius:8px;font-size:13px;font-weight:600;color:var(--ink-2);cursor:pointer;transition:.15s;}
+  .seg__btn.is-on{background:#fff;color:var(--primary-dark);box-shadow:0 1px 3px rgba(31,35,41,.08);}
+  .start-time{display:flex;align-items:center;justify-content:space-between;margin-top:12px;padding-top:12px;border-top:1px solid var(--line);}
+  .time-input{font-family:var(--font);font-size:15px;font-weight:600;color:var(--ink);border:1px solid var(--line-2);border-radius:9px;padding:7px 10px;background:#fff;}
+
+  /* 执行账号池 */
+  .link-btn{border:none;background:none;color:var(--primary-dark);font-size:12px;font-weight:600;cursor:pointer;padding:2px 0;}
+  .acc-pool{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;}
+  .acc-chip{display:flex;align-items:center;justify-content:center;gap:5px;height:38px;border:1px solid var(--line-2);border-radius:10px;background:#fff;font-size:12.5px;font-weight:500;color:var(--ink-2);cursor:pointer;transition:.12s;}
+  .acc-chip svg{width:13px;height:13px;opacity:0;transition:.12s;color:var(--primary);}
+  .acc-chip.is-on{border-color:var(--primary);background:var(--primary-soft);color:var(--primary-dark);font-weight:600;}
+  .acc-chip.is-on svg{opacity:1;}
+
+  /* 执行卡：执行账号行 */
+  .active__acc{display:flex;align-items:center;gap:7px;margin-top:11px;font-size:13px;font-weight:500;color:var(--ink-2);cursor:pointer;white-space:nowrap;overflow:hidden;}
+  .active__acc svg{color:var(--primary);flex:0 0 auto;}
+  .active__acc b{color:var(--ink);font-weight:600;overflow:hidden;text-overflow:ellipsis;}
+  .active__acc .more{color:var(--primary-dark);font-weight:600;margin-left:4px;flex:0 0 auto;display:inline-flex;align-items:center;}
+  /* ===== Tab 切换 ===== */
+  .tabs{display:flex;gap:4px;padding:2px 16px 8px;background:var(--surface);}
+  .tab{flex:1;height:38px;border:none;background:#F2F4F7;border-radius:10px;font-size:14px;font-weight:600;color:var(--ink-2);cursor:pointer;transition:.15s;}
+  .tab.is-on{background:var(--primary);color:#fff;}
+  .view[hidden]{display:none;}
+
+  /* ===== 手动养号 ===== */
+  .m-summary{background:var(--primary-soft);border:1px solid var(--primary-line);border-radius:var(--radius);padding:14px 16px;margin-top:4px;}
+  .m-summary__top{display:flex;align-items:flex-start;gap:12px;}
+  .m-summary__left{flex:1;min-width:0;}
+  .m-summary__right{display:flex;flex-direction:column;gap:7px;flex:0 0 auto;justify-content:center;align-self:stretch;}
+  .m-summary__t{font-size:13px;font-weight:700;color:var(--primary-dark);}
+  .m-summary__num{font-size:22px;font-weight:700;color:var(--ink);margin:6px 0 0;}
+  .m-summary__num b{color:var(--primary-dark);}
+  .m-summary__num span{color:var(--ink-3);font-size:15px;}
+  .m-prog{height:6px;border-radius:6px;background:#fff;overflow:hidden;margin-top:8px;}
+  .m-prog i{display:block;height:100%;background:var(--primary);border-radius:6px;transition:width .35s;}
+  .m-summary__hint{font-size:11.5px;color:var(--primary-deep);margin-top:8px;line-height:1.4;}
+
+  .m-list{display:flex;flex-direction:column;gap:10px;}
+  .mtask{background:var(--surface);border:1px solid var(--line);border-radius:var(--radius);padding:13px 14px;transition:.2s;}
+  .mtask.done{background:#F8F9FB;}
+  .mtask__head{display:flex;align-items:flex-start;gap:11px;}
+  .mtask__ico{width:36px;height:36px;border-radius:11px;background:var(--primary-soft);color:var(--primary);display:flex;align-items:center;justify-content:center;flex:0 0 auto;}
+  .mtask__main{flex:1;min-width:0;}
+  .mtask__name{font-size:14.5px;font-weight:600;color:var(--ink);}
+  .mtask.done .mtask__name{color:var(--ink-2);}
+  .mtask__tags{display:flex;flex-wrap:wrap;gap:6px;margin-top:5px;}
+  .mtask__freq{font-size:11px;font-weight:600;color:var(--primary-dark);background:var(--primary-soft);border-radius:6px;padding:2px 8px;}
+  .mtask__metric{font-size:11px;color:var(--ink-3);background:#F4F6F8;border-radius:6px;padding:2px 8px;}
+  .mtask__gear{flex:0 0 auto;width:30px;height:30px;border:none;background:transparent;color:var(--ink-3);display:flex;align-items:center;justify-content:center;cursor:pointer;border-radius:8px;}
+  .mtask__gear:active{background:var(--line);}
+  .mtask__foot{display:flex;align-items:center;justify-content:space-between;margin-top:12px;padding-top:11px;border-top:1px solid var(--line);}
+  .mtask__deadline{font-size:12px;color:var(--ink-2);display:flex;align-items:center;gap:5px;}
+  .mtask__deadline svg{color:var(--primary);}
+  .mtask__deadline b{color:var(--ink);font-weight:600;}
+  .mtask__btn{display:inline-flex;align-items:center;gap:5px;height:32px;padding:0 14px;border-radius:9px;border:1px solid var(--primary);background:var(--primary);color:#fff;font-size:13px;font-weight:600;cursor:pointer;transition:.15s;}
+  .mtask__btn:active{transform:scale(.97);}
+  .mtask__btn.done-btn{background:#15803D;border-color:#15803D;color:#fff;}
+
+  .m-link{display:inline-flex;align-items:center;gap:5px;height:30px;padding:0 10px;border:1px solid var(--primary-line);background:#fff;color:var(--primary-dark);font-size:12px;font-weight:600;border-radius:20px;cursor:pointer;white-space:nowrap;}
+  .m-link:active{background:var(--primary-soft);}
+
+  /* 完成记录页 */
+  .log-filters{padding:10px 16px 6px;border-bottom:1px solid var(--line);background:var(--surface);}
+  .log-filter-row{display:flex;align-items:center;justify-content:space-between;padding:8px 0;border-bottom:1px solid var(--line);}
+  .log-filter-row:last-of-type{border-bottom:none;}
+  .log-filter-l{font-size:13px;font-weight:600;color:var(--ink);flex:0 0 60px;}
+  .log-filter-r{display:flex;align-items:center;gap:6px;font-size:12px;color:var(--ink-3);}
+  .time-input--sm{font-size:12px;padding:4px 7px;border-radius:7px;height:30px;max-width:112px;}
+  .log-type-btns{display:flex;flex-wrap:wrap;gap:6px;}
+  .log-type-btn{height:28px;padding:0 10px;border:1px solid var(--line-2);border-radius:20px;background:#fff;font-size:12px;color:var(--ink-2);cursor:pointer;white-space:nowrap;}
+  .log-type-btn.is-on{border-color:var(--primary);background:var(--primary-soft);color:var(--primary-dark);font-weight:600;}
+  .log-reset{display:block;margin:8px 0 4px auto;border:none;background:none;font-size:12px;color:var(--ink-3);cursor:pointer;padding:2px 0;}
+  .log-empty{text-align:center;padding:40px 0;font-size:13px;color:var(--ink-3);}
+  .log-group{margin-bottom:16px;}
+  .log-group__date{font-size:12px;font-weight:700;color:var(--ink-3);margin-bottom:8px;padding-left:2px;}
+  .log-row{display:flex;align-items:center;gap:11px;background:var(--surface);border:1px solid var(--line);border-radius:var(--radius-sm);padding:12px 13px;margin-bottom:8px;}
+  .log-row__ico{width:34px;height:34px;border-radius:10px;background:var(--primary-soft);color:var(--primary);display:flex;align-items:center;justify-content:center;flex:0 0 auto;}
+  .log-row__main{flex:1;min-width:0;}
+  .log-row__name{font-size:14px;font-weight:600;}
+  .log-row__meta{font-size:11.5px;color:var(--ink-3);margin-top:3px;}
+  .log-row__time{font-size:12px;color:var(--ink-2);white-space:nowrap;text-align:right;}
+
+  /* 手动任务设置弹层字段 */
+  .mt-field{display:flex;align-items:center;justify-content:space-between;padding:14px 0;border-bottom:1px solid var(--line);}
+  .mt-field--col{flex-direction:column;align-items:stretch;}
+  .mt-field:last-child{border-bottom:none;}
 </style>
 </head>
 <body>
@@ -209,6 +358,18 @@
   <symbol id="i-bolt" viewBox="0 0 24 24"><path d="M13 3L5 13h5l-1 8 8-10h-5z" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/></symbol>
   <symbol id="i-clock" viewBox="0 0 24 24"><circle cx="12" cy="12" r="8.5" fill="none" stroke="currentColor" stroke-width="1.8"/><path d="M12 7.5V12l3 2" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></symbol>
   <symbol id="i-cog" viewBox="0 0 24 24"><circle cx="12" cy="12" r="3" fill="none" stroke="currentColor" stroke-width="1.8"/><path d="M12 3v2.5M12 18.5V21M3 12h2.5M18.5 12H21M5.6 5.6l1.8 1.8M16.6 16.6l1.8 1.8M18.4 5.6l-1.8 1.8M7.4 16.6l-1.8 1.8" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></symbol>
+  <symbol id="i-pause" viewBox="0 0 24 24"><rect x="7" y="6" width="3.4" height="12" rx="1.2" fill="currentColor"/><rect x="13.6" y="6" width="3.4" height="12" rx="1.2" fill="currentColor"/></symbol>
+  <symbol id="i-play" viewBox="0 0 24 24"><path d="M8 6l11 6-11 6z" fill="currentColor"/></symbol>
+  <symbol id="i-edit" viewBox="0 0 24 24"><path d="M14 5l5 5M4 20l1-4L16 5l3 3L8 19z" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/></symbol>
+  <symbol id="i-alert" viewBox="0 0 24 24"><path d="M12 4l9 16H3z" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/><path d="M12 10v4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/><circle cx="12" cy="17" r="1.1" fill="currentColor"/></symbol>
+  <symbol id="i-user" viewBox="0 0 24 24"><circle cx="12" cy="8" r="3.6" fill="none" stroke="currentColor" stroke-width="1.8"/><path d="M5 19c1.2-3.4 4-5 7-5s5.8 1.6 7 5" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></symbol>
+  <symbol id="i-up" viewBox="0 0 24 24"><path d="M12 6l5 6h-3v6h-4v-6H7z" fill="currentColor"/></symbol>
+  <symbol id="i-down" viewBox="0 0 24 24"><path d="M12 18l-5-6h3V6h4v6h3z" fill="currentColor"/></symbol>
+  <symbol id="i-gift" viewBox="0 0 24 24"><rect x="4" y="9" width="16" height="11" rx="1.5" fill="none" stroke="currentColor" stroke-width="1.7"/><path d="M4 13h16M12 9v11" stroke="currentColor" stroke-width="1.7"/><path d="M12 9c-1-3-5-3-5-1s4 1 5 1zM12 9c1-3 5-3 5-1s-4 1-5 1z" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/></symbol>
+  <symbol id="i-group" viewBox="0 0 24 24"><circle cx="8.5" cy="9" r="2.6" fill="none" stroke="currentColor" stroke-width="1.7"/><circle cx="16" cy="10" r="2.2" fill="none" stroke="currentColor" stroke-width="1.7"/><path d="M3.5 18c.9-2.6 3-3.8 5-3.8s4.1 1.2 5 3.8M14.5 14.6c2-.2 3.8 1 4.5 3" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/></symbol>
+  <symbol id="i-traffic" viewBox="0 0 24 24"><path d="M12 3a9 9 0 1 0 9 9h-9z" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/><path d="M12 3v9h9" stroke="currentColor" stroke-width="1.7" opacity=".5"/></symbol>
+  <symbol id="i-hand" viewBox="0 0 24 24"><path d="M6 11V6a1.6 1.6 0 0 1 3.2 0v4M9.2 10V4.5a1.6 1.6 0 0 1 3.2 0V10M12.4 10.5V6a1.6 1.6 0 0 1 3.2 0v6.5c0 3.6-2 6.5-5.6 6.5-2 0-3.2-.8-4.4-2.4L3 14c-.6-1 .2-2.2 1.4-2 .7.1 1.2.5 1.6 1.2L7 15" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></symbol>
+  <symbol id="i-calendar" viewBox="0 0 24 24"><rect x="4" y="5" width="16" height="15" rx="2" fill="none" stroke="currentColor" stroke-width="1.7"/><path d="M4 9h16M8 3v4M16 3v4" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/></symbol>
   <symbol id="t-moments" viewBox="0 0 24 24"><rect x="4" y="5" width="16" height="14" rx="3" fill="none" stroke="currentColor" stroke-width="1.8"/><circle cx="9" cy="10" r="1.6" fill="none" stroke="currentColor" stroke-width="1.6"/><path d="M5 17l4-4 3 3 3-3 4 4" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></symbol>
   <symbol id="t-article" viewBox="0 0 24 24"><rect x="5" y="4" width="14" height="16" rx="2" fill="none" stroke="currentColor" stroke-width="1.8"/><path d="M8 9h8M8 12.5h8M8 16h5" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></symbol>
   <symbol id="t-video" viewBox="0 0 24 24"><circle cx="12" cy="12" r="8" fill="none" stroke="currentColor" stroke-width="1.8"/><path d="M10.5 9.2l5 2.8-5 2.8z" fill="currentColor"/></symbol>
@@ -231,27 +392,51 @@
     <span class="nav__back nav__back--ph" aria-hidden="true"></span>
   </div>
 
+  <!-- Tab 切换 -->
+  <div class="tabs">
+    <button class="tab is-on" data-tab="ai">AI 养号</button>
+    <button class="tab" data-tab="manual">手动养号</button>
+  </div>
+
   <div class="body">
+    <!-- ===== AI 养号视图 ===== -->
+    <div class="view" id="viewAI">
     <!-- 1. 数据统计 -->
     <div class="sec-h"><span class="sec-h__t">今日数据（6 月 13 日）</span></div>
     <div class="ov-bar">
-      <div class="cell"><span class="ico"><svg width="16" height="16"><use href="#i-bot"/></svg></span><span><span class="v" id="ovAcc">0</span><div class="k">AI 账号</div></span></div>
+      <div class="cell cell--tap" id="accCell"><span class="ico"><svg width="16" height="16"><use href="#i-bot"/></svg></span><span><span class="v" id="ovAcc">0</span><div class="k">执行账号</div></span><span class="cell__chev"><svg width="16" height="16"><use href="#i-chev"/></svg></span></div>
       <div class="cell"><span class="ico"><svg width="16" height="16"><use href="#i-bolt"/></svg></span><span><span class="v" id="ovTotal">0</span><div class="k">养号行为</div></span></div>
     </div>
     <div class="metric-grid" id="metricGrid"></div>
 
     <!-- 2. 当前执行中的养号策略 -->
-    <div class="sec-h"><span class="sec-h__t">执行中的养号策略</span></div>
+    <div class="sec-h"><span class="sec-h__t">执行中的养号策略</span><button class="cfg-entry" id="openCfg"><svg width="14" height="14"><use href="#i-cog"/></svg>策略设置</button></div>
     <div class="active" id="activeCard"></div>
 
     <!-- 3. 历史数据（折叠列表） -->
-    <div class="sec-h"><span class="sec-h__t">历史数据</span><span class="sec-h__hint">近 7 日</span></div>
+    <div class="sec-h"><span class="sec-h__t">历史数据</span></div>
     <div class="date-acc" id="dateAcc"></div>
-  </div>
+    </div>
 
-  <!-- 底部：策略设置 -->
-  <div class="footer">
-    <button class="submit" id="openCfg"><svg width="18" height="18"><use href="#i-cog"/></svg>策略设置</button>
+    <!-- ===== 手动养号视图 ===== -->
+    <div class="view" id="viewManual" hidden>
+      <div class="m-summary">
+        <div class="m-summary__top">
+          <div class="m-summary__left">
+            <div class="m-summary__t">本周期进度</div>
+            <div class="m-summary__num"><b id="mDone">0</b> / <span id="mTotal">0</span> 项已完成</div>
+            <div class="m-prog"><i id="mProgBar" style="width:0%"></i></div>
+            <div class="m-summary__hint">每个任务到截止后按周期自动重置，完成一次进入下一周期</div>
+          </div>
+          <div class="m-summary__right">
+            <button class="m-link" id="manualAccBtn"><svg width="13" height="13"><use href="#i-bot"/></svg>账号列表<svg width="13" height="13"><use href="#i-chev"/></svg></button>
+            <button class="m-link" id="manualLogBtn"><svg width="13" height="13"><use href="#i-calendar"/></svg>完成记录<svg width="13" height="13"><use href="#i-chev"/></svg></button>
+          </div>
+        </div>
+      </div>
+      <div class="sec-h"><span class="sec-h__t">手动养号任务</span></div>
+      <div class="m-list" id="manualList"></div>
+    </div>
   </div>
 
   <!-- 策略设置：独立页面 -->
@@ -270,7 +455,7 @@
         <span class="note__ico"><svg width="18" height="18"><use href="#i-info"/></svg></span>
         <span class="note__txt">可按顺序从任务列表中选择需要执行的任务，并配置执行数量</span>
       </div>
-      <div class="sec-h" style="margin-top:0"><span class="sec-h__t">养号任务<span class="pill-count" id="selCount">0</span></span><span class="sec-h__hint">按勾选顺序自动执行</span></div>
+      <div class="sec-h"><span class="sec-h__t">养号任务<span class="pill-count" id="selCount">0</span></span><span class="sec-h__hint">按勾选顺序自动执行</span></div>
       <div class="list" id="taskList"></div>
       <div class="interval-card" id="intervalCard" style="display:none">
         <div class="interval-card__top">
@@ -284,7 +469,25 @@
           <input type="range" min="0" max="10" step="1" value="7" id="gMax">
         </div>
         <div class="dual__ticks"><span>0</span><span>5 分钟</span><span>10</span></div>
+        <div class="intv-warn" id="intvWarn" style="display:none"><svg width="14" height="14"><use href="#i-alert"/></svg>间隔过短可能触发平台风控，建议不低于 2 分钟</div>
       </div>
+
+      <!-- 开始时间 -->
+      <div class="sec-h"><span class="sec-h__t">开始时间</span></div>
+      <div class="start-card">
+        <div class="seg" id="startSeg">
+          <button class="seg__btn is-on" data-start="now">立即开始</button>
+          <button class="seg__btn" data-start="scheduled">定时开始</button>
+        </div>
+        <div class="start-time" id="startTimeWrap" style="display:none">
+          <span class="field__label">每日定时执行</span>
+          <input type="time" id="startTime" value="09:00" class="time-input">
+        </div>
+      </div>
+
+      <!-- 执行账号 -->
+      <div class="sec-h"><span class="sec-h__t">执行账号<span class="pill-count" id="accSelCount">0</span></span><button class="link-btn" id="accAll">全选 / 清空</button></div>
+      <div class="acc-pool" id="accPool"></div>
     </div>
     <div class="footer">
       <button class="submit" id="cfgSave"><svg width="18" height="18"><use href="#i-check"/></svg>保存策略</button>
@@ -300,6 +503,61 @@
     <div class="sheet__foot">
       <button class="btn-ghost" id="cancelBtn">再改改</button>
       <button class="btn-primary" id="confirmBtn">确认提交</button>
+    </div>
+  </div>
+
+  <!-- 账号清单弹层 -->
+  <div class="mask" id="accMask"></div>
+  <div class="sheet" id="accSheet" style="z-index:36;max-height:60%">
+    <div class="sheet__grip"></div>
+    <div class="sheet__h"><h3 id="accTitle">账号列表</h3><p>共 <b id="accTotalN">0</b> 个账号需要手动养号</p></div>
+    <div class="sheet__list" id="accList"></div>
+    <div class="sheet__foot"><button class="btn-primary" id="accDone" style="flex:1">知道了</button></div>
+  </div>
+
+  <!-- 完成记录页 -->
+  <div class="page" id="logPage">
+    <div class="statusbar"><span>9:41</span><span class="dots"><svg width="18" height="12"><use href="#i-signal"/></svg><svg width="26" height="12"><use href="#i-batt"/></svg></span></div>
+    <div class="nav nav--center">
+      <button class="nav__back" id="logBack"><svg width="22" height="22"><use href="#i-back"/></svg></button>
+      <div class="nav__title">完成记录</div>
+      <span class="nav__back nav__back--ph" aria-hidden="true"></span>
+    </div>
+    <!-- 筛选条件 -->
+    <div class="log-filters">
+      <div class="log-filter-row">
+        <span class="log-filter-l">时间范围</span>
+        <span class="log-filter-r"><input type="date" class="time-input time-input--sm" id="logFrom"> 至 <input type="date" class="time-input time-input--sm" id="logTo"></span>
+      </div>
+      <div class="log-filter-row">
+        <span class="log-filter-l">任务类型</span>
+        <div class="log-type-btns" id="logTypeBtns"></div>
+      </div>
+      <button class="log-reset" id="logReset">重置筛选</button>
+    </div>
+    <div class="body" style="padding-top:4px">
+      <div id="logList"></div>
+    </div>
+  </div>
+
+  <!-- 手动任务：周期设置弹层 -->
+  <div class="mask" id="mtMask"></div>
+  <div class="sheet" id="mtSheet" style="z-index:36">
+    <div class="sheet__grip"></div>
+    <div class="sheet__h"><h3>任务周期设置</h3><p id="mtName">—</p></div>
+    <div class="sheet__list">
+      <div class="mt-field"><span class="field__label">开始时间</span><input type="date" id="mtStart" class="time-input"></div>
+      <div class="mt-field mt-field--col"><span class="field__label" style="margin-bottom:8px">执行周期</span>
+        <div class="seg" id="mtCycleSeg">
+          <button class="seg__btn" data-cycle="14">每两周</button>
+          <button class="seg__btn" data-cycle="28">每四周</button>
+          <button class="seg__btn" data-cycle="30">每月</button>
+        </div>
+      </div>
+    </div>
+    <div class="sheet__foot">
+      <button class="btn-ghost" id="mtCancel">取消</button>
+      <button class="btn-primary" id="mtSave">保存</button>
     </div>
   </div>
 
@@ -324,11 +582,23 @@
   var PICK = [];
 
   // 当前生效的策略（默认值 = 用户示例）
+  // 账号池：AI账号1 ~ AI账号15
+  var POOL = [];
+  for(var _i=1;_i<=15;_i++){ POOL.push('AI账号'+_i); }
+
   var ACTIVE = {
     ids:['moments','video','look','like'],
     counts:{moments:1, video:10, look:5, like:3},
-    min:3, max:7
+    min:3, max:7,
+    accounts:[
+      {idx:0, time:'09:00'},{idx:1, time:'09:00'},{idx:2, time:'09:00'},{idx:3, time:'09:00'},
+      {idx:4, time:'11:30'},{idx:5, time:'11:30'},{idx:6, time:'11:30'},{idx:7, time:'11:30'}
+    ],
+    startMode:'now', startTime:'09:00'
   };
+  // 配置工作态
+  var WACC = [];                  // 当前勾选的执行账号下标
+  var WSTART = { mode:'now', time:'09:00' };
 
   /* ---------- 数据统计（今日 + 历史） ---------- */
   var METRICS = [
@@ -336,22 +606,23 @@
     {id:'search',  icon:'t-search',  name:'使用搜一搜',    short:'搜一搜',  sub:'查询次数', unit:'次'},
     {id:'article', icon:'t-article', name:'浏览公众号',    short:'公众号',  sub:'阅读篇数', unit:'篇'},
     {id:'moments', icon:'t-moments', name:'发布朋友圈',    short:'朋友圈',  sub:'发布条数', unit:'条'},
+    {id:'look',    icon:'t-look',    name:'看一看浏览',    short:'看一看',  sub:'浏览篇数', unit:'篇'},
     {id:'like',    icon:'t-like',    name:'点赞与评论',    short:'点赞评论',sub:'互动次数', unit:'次'}
   ];
   var DAYS = [
-    {label:'今天', date:'6/13', acc:8, data:[128,16,9,3,7],  trend:'较昨日 +12%，处于安全活跃区间'},
-    {label:'昨天', date:'6/12', acc:8, data:[112,14,8,2,6],  trend:'较前日 +5%，节奏平稳'},
-    {label:'周三', date:'6/11', acc:7, data:[106,12,7,3,5],  trend:'较前日 -3%，略有回落'},
-    {label:'周二', date:'6/10', acc:7, data:[120,15,10,2,8], trend:'较前日 +9%，活跃度较高'},
-    {label:'周一', date:'6/9',  acc:6, data:[98,11,6,1,4],   trend:'较前日 -8%，周一低谷'},
-    {label:'周日', date:'6/8',  acc:6, data:[88,9,5,2,3],    trend:'周末，行为量偏低'},
-    {label:'周六', date:'6/7',  acc:5, data:[92,10,6,2,4],   trend:'周末，行为量偏低'}
+    {label:'今天', date:'6/13', acc:8, data:[128,16,9,3,22,7],  trend:'较昨日 +12%，处于安全活跃区间'},
+    {label:'昨天', date:'6/12', acc:8, data:[112,14,8,2,18,6],  trend:'较前日 +5%，节奏平稳'},
+    {label:'周三', date:'6/11', acc:7, data:[106,12,7,3,15,5],  trend:'较前日 -3%，略有回落'},
+    {label:'周二', date:'6/10', acc:7, data:[120,15,10,2,20,8], trend:'较前日 +9%，活跃度较高'},
+    {label:'周一', date:'6/9',  acc:6, data:[98,11,6,1,12,4],   trend:'较前日 -8%，周一低谷'},
+    {label:'周日', date:'6/8',  acc:6, data:[88,9,5,2,10,3],    trend:'周末，行为量偏低'},
+    {label:'周六', date:'6/7',  acc:5, data:[92,10,6,2,11,4],   trend:'周末，行为量偏低'}
   ];
 
   var metricGrid = document.getElementById('metricGrid');
   function buildToday(){
-    var d = DAYS[0];
-    document.getElementById('ovAcc').innerHTML = d.acc + '<small>个</small>';
+    var d = DAYS[0], y = DAYS[1];
+    document.getElementById('ovAcc').innerHTML = ACTIVE.accounts.length + '<small>个</small>';
     document.getElementById('ovTotal').innerHTML = d.data.reduce(function(a,b){return a+b;},0) + '<small>次</small>';
     metricGrid.innerHTML = METRICS.map(function(m,k){
       return '<div class="metric">'+
@@ -386,7 +657,7 @@
           '<span class="acc-sum"><b>'+d.acc+'</b>个账号 · <b>'+total+'</b>次行为</span>'+
           '<span class="acc-chev"><svg width="20" height="20"><use href="#i-chev"/></svg></span>'+
         '</div>'+
-        '<div class="acc-body"><div class="acc-inner"><p class="acc-trend">'+d.trend+'</p>'+metricRows(d)+'</div></div>'+
+        '<div class="acc-body"><div class="acc-inner">'+metricRows(d)+'</div></div>'+
       '</div>';
     }).join('');
   }
@@ -395,11 +666,19 @@
     if(head) head.parentNode.classList.toggle('is-open');
   });
 
-  /* ---------- 当前执行中的策略 ---------- */
+  /* ---------- 当前执行中的策略（状态/进度/控制） ---------- */
   var activeCard = document.getElementById('activeCard');
   function intervalText(mn,mx){ return mn===mx ? (mn+' 分钟') : (mn+'–'+mx+' 分钟'); }
+
+  var RUN = { running:true, step:0, remain:0 };
+  function resetProgress(){
+    RUN.step = 0;
+    RUN.remain = ACTIVE.min + Math.floor(Math.random()*(ACTIVE.max-ACTIVE.min+1));
+  }
+
   function renderActive(){
     if(!ACTIVE.ids.length){
+      activeCard.className = 'active';
       activeCard.innerHTML = '<div class="active__top"><span class="active__title">执行中的养号策略</span></div>'+
         '<div class="active__empty">暂未配置养号策略，点击下方“策略设置”开始配置。</div>';
       return;
@@ -407,12 +686,35 @@
     var items = ACTIVE.ids.map(function(id,idx){
       return '<span class="active__item"><i>'+(idx+1)+'.</i>'+taskById(id).name+'</span>';
     }).join('');
+    var curName = taskById(ACTIVE.ids[RUN.step % ACTIVE.ids.length]).name;
+    var pct = Math.round(((RUN.step % ACTIVE.ids.length)+1) / ACTIVE.ids.length * 100);
+    var accNames = ACTIVE.accounts.map(function(a){ return POOL[a.idx]; });
+    var accShown = accNames.slice(0,2).join('、');
+    var accMore = accNames.length>2 ? ' 等 '+accNames.length+' 个' : '';
+    activeCard.className = 'active';
     activeCard.innerHTML =
-      '<div class="active__top"><span class="active__dot"></span><span class="active__title">养号任务序列</span><span class="active__badge">执行中</span></div>'+
+      '<div class="active__ctrl">'+
+        '<span class="active__status"><span class="active__dot"></span>'+
+          '<span class="status-pill">执行中</span></span>'+
+      '</div>'+
+      '<div class="active__prog">'+
+        '<div class="active__prog-top"><span class="active__prog-cur">当前：<b>'+curName+'</b>（第 '+((RUN.step % ACTIVE.ids.length)+1)+'/'+ACTIVE.ids.length+' 步）</span></div>'+
+        '<div class="active__prog-bar"><i style="width:'+pct+'%"></i></div>'+
+      '</div>'+
       '<div class="active__seq">'+items+'</div>'+
+      '<div class="active__acc" id="activeAcc"><svg width="15" height="15"><use href="#i-bot"/></svg>执行账号：<b>'+accShown+'</b>'+accMore+'<span class="more">查看<svg width="14" height="14"><use href="#i-chev"/></svg></span></div>'+
       '<div class="active__div"></div>'+
-      '<div class="active__intv"><svg width="15" height="15"><use href="#i-clock"/></svg>执行间隔 <b>'+intervalText(ACTIVE.min,ACTIVE.max)+'</b> 随机</div>';
+      '<div class="active__intv"><svg width="15" height="15"><use href="#i-clock"/></svg>间隔 <b>'+intervalText(ACTIVE.min,ACTIVE.max)+'</b></div>';
+    document.getElementById('activeAcc').addEventListener('click', openAcc);
   }
+
+  // 进度模拟：每 2 秒推进，运行中倒计时
+  setInterval(function(){
+    if(!RUN.running || !ACTIVE.ids.length) return;
+    if(RUN.remain > 0){ RUN.remain--; }
+    else { RUN.step++; resetProgress(); }
+    renderActive();
+  }, 2000);
 
   /* ---------- 配置弹窗：任务列表 ---------- */
   var listEl = document.getElementById('taskList');
@@ -446,8 +748,13 @@
     var c = TASKS.filter(function(t){return t.sel;}).length;
     selCount.textContent = c;
     intervalCard.style.display = c>0 ? '' : 'none';
-    cfgSave.disabled = c===0;
-    cfgSave.style.opacity = c===0 ? .5 : 1;
+    updateSaveState();
+  }
+  function updateSaveState(){
+    var c = TASKS.filter(function(t){return t.sel;}).length;
+    var ok = c>0 && WACC.length>0;
+    cfgSave.disabled = !ok;
+    cfgSave.style.opacity = ok ? 1 : .5;
   }
 
   listEl.addEventListener('click', function(e){
@@ -472,6 +779,7 @@
     gFill.style.width=((GLOBAL.max-GLOBAL.min)/RMAX*100)+'%';
     gVal.textContent=intervalText(GLOBAL.min,GLOBAL.max);
   }
+  var intvWarn = document.getElementById('intvWarn');
   function onSlide(which){
     var mn=+gMin.value, mx=+gMax.value;
     if(which==='min'&&mn>mx){mn=mx;gMin.value=mn;}
@@ -479,6 +787,7 @@
     GLOBAL.min=mn; GLOBAL.max=mx;
     gMin.style.zIndex=(mn>RMAX/2)?5:3; gMax.style.zIndex=(mn>RMAX/2)?3:4;
     paintFill();
+    intvWarn.style.display = (mn < 2) ? 'flex' : 'none';
   }
   gMin.addEventListener('input',function(){onSlide('min');});
   gMax.addEventListener('input',function(){onSlide('max');});
@@ -499,16 +808,64 @@
     ACTIVE.counts = {};
     PICK.forEach(function(id){ ACTIVE.counts[id] = taskById(id).count; });
     ACTIVE.min = GLOBAL.min; ACTIVE.max = GLOBAL.max;
-    renderActive();
+    var t = WSTART.mode==='scheduled' ? WSTART.time : '立即';
+    ACTIVE.accounts = WACC.slice().sort(function(a,b){return a-b;}).map(function(idx){ return {idx:idx, time:t}; });
+    ACTIVE.startMode = WSTART.mode; ACTIVE.startTime = WSTART.time;
+    buildToday(); renderActive();
   }
   // 设置页默认无勾选：清空所有选择、数量回到默认、间隔回到默认
   function resetWorking(){
     PICK = [];
     TASKS.forEach(function(t){ t.sel = false; t.count = DEF_COUNT[t.id]; });
-    GLOBAL.min = 1; GLOBAL.max = 3;
-    gMin.value = 1; gMax.value = 3;
+    GLOBAL.min = 2; GLOBAL.max = 5;
+    gMin.value = 2; gMax.value = 5;
+    intvWarn.style.display = 'none';
+    WACC = [];                       // 默认不勾选账号
+    WSTART = { mode:'now', time:'09:00' };
+    renderPool(); renderStart();
     render(); paintFill();
   }
+
+  /* ---------- 执行账号池 ---------- */
+  var accPoolEl = document.getElementById('accPool');
+  var accSelCount = document.getElementById('accSelCount');
+  function renderPool(){
+    accPoolEl.innerHTML = POOL.map(function(name,idx){
+      var on = WACC.indexOf(idx) > -1;
+      return '<button class="acc-chip'+(on?' is-on':'')+'" data-acc="'+idx+'">'+
+        '<svg><use href="#i-check"/></svg>'+name+'</button>';
+    }).join('');
+    accSelCount.textContent = WACC.length;
+    updateSaveState();
+  }
+  accPoolEl.addEventListener('click', function(e){
+    var b = e.target.closest('[data-acc]');
+    if(!b) return;
+    var idx = +b.dataset.acc, p = WACC.indexOf(idx);
+    if(p>-1) WACC.splice(p,1); else WACC.push(idx);
+    renderPool();
+  });
+  document.getElementById('accAll').addEventListener('click', function(){
+    WACC = (WACC.length===POOL.length) ? [] : POOL.map(function(_,i){return i;});
+    renderPool();
+  });
+
+  /* ---------- 开始时间 ---------- */
+  var startSeg = document.getElementById('startSeg');
+  var startTimeWrap = document.getElementById('startTimeWrap');
+  var startTimeInput = document.getElementById('startTime');
+  function renderStart(){
+    [].forEach.call(startSeg.children, function(b){ b.classList.toggle('is-on', b.dataset.start===WSTART.mode); });
+    startTimeWrap.style.display = WSTART.mode==='scheduled' ? 'flex' : 'none';
+    startTimeInput.value = WSTART.time;
+  }
+  startSeg.addEventListener('click', function(e){
+    var b = e.target.closest('[data-start]');
+    if(!b) return;
+    WSTART.mode = b.dataset.start;
+    renderStart();
+  });
+  startTimeInput.addEventListener('change', function(){ WSTART.time = startTimeInput.value || '09:00'; });
 
   /* ---------- 弹窗控制 ---------- */
   var cfgPage = document.getElementById('cfgPage');
@@ -527,6 +884,10 @@
     });
     html+='<div class="srow srow--interval"><span class="srow__name">统一执行间隔</span>'+
       '<span class="srow__meta"><b>'+intervalText(GLOBAL.min,GLOBAL.max)+'</b> · 区间随机</span></div>';
+    html+='<div class="srow"><span class="srow__name">执行账号</span>'+
+      '<span class="srow__meta"><b>'+WACC.length+'</b> 个账号</span></div>';
+    html+='<div class="srow"><span class="srow__name">开始时间</span>'+
+      '<span class="srow__meta"><b>'+(WSTART.mode==='now'?'立即开始':('每日 '+WSTART.time))+'</b></span></div>';
     confirmList.innerHTML=html;
     mask.classList.add('show'); sheet.classList.add('show');
   }
@@ -536,16 +897,230 @@
   document.getElementById('cancelBtn').addEventListener('click', closeConfirm);
   document.getElementById('confirmBtn').addEventListener('click', function(){
     commitWorkingToActive();
+    RUN.running = true; resetProgress(); renderActive();
     closeConfirm(); closeCfg();
+    activeCard.classList.remove('flash'); void activeCard.offsetWidth; activeCard.classList.add('flash');
     var toast=document.getElementById('toast');
     toast.classList.add('show');
     setTimeout(function(){ toast.classList.remove('show'); }, 2200);
   });
 
+  /* ---------- 执行账号清单（只读查看） ---------- */
+  var accMask=document.getElementById('accMask'), accSheet=document.getElementById('accSheet'), accList=document.getElementById('accList');
+  function openAcc(title){
+    if(typeof title!=='string') title='执行中的账号';
+    document.getElementById('accTitle').textContent = title;
+    document.getElementById('accTotalN').textContent = ACTIVE.accounts.length;
+    if(!ACTIVE.accounts.length){
+      accList.innerHTML = '<div class="arow"><span class="arow__name" style="color:var(--ink-3)">暂无执行账号</span></div>';
+      accMask.classList.add('show'); accSheet.classList.add('show'); return;
+    }
+    // 手动养号账号列表：标签云，不分组，无状态标签
+    if(title==='账号列表'){
+      document.getElementById('accTotalN').textContent = ACTIVE.accounts.length;
+      accList.innerHTML = '<div class="acc-tags" style="padding:4px 0 8px">'+
+        ACTIVE.accounts.map(function(a){
+          return '<span class="acc-tag"><svg width="12" height="12"><use href="#i-bot"/></svg>'+POOL[a.idx]+'</span>';
+        }).join('')+'</div>';
+      accMask.classList.add('show'); accSheet.classList.add('show'); return;
+    }
+    // AI养号账号列表：按开始时间分组
+    var groups = {};
+    ACTIVE.accounts.forEach(function(a){
+      var t = a.time || '立即';
+      if(!groups[t]) groups[t] = [];
+      groups[t].push(POOL[a.idx]);
+    });
+    var html = '';
+    Object.keys(groups).sort().forEach(function(t){
+      html += '<div class="acc-group-h">'+(t==='立即'?'立即开始':t+' 开始')+'<span class="acc-group-c">'+groups[t].length+' 个账号</span></div>';
+      html += '<div class="acc-tags">'+groups[t].map(function(n){
+        return '<span class="acc-tag"><svg width="12" height="12"><use href="#i-bot"/></svg>'+n+'</span>';
+      }).join('')+'</div>';
+    });
+    accList.innerHTML = html;
+    accMask.classList.add('show'); accSheet.classList.add('show');
+  }
+  function closeAcc(){ accMask.classList.remove('show'); accSheet.classList.remove('show'); }
+  document.getElementById('accCell').addEventListener('click', openAcc);
+  accMask.addEventListener('click', closeAcc);
+  document.getElementById('accDone').addEventListener('click', closeAcc);
+
+  /* ====================================================================
+     手动养号
+  ==================================================================== */
+  var NOW = new Date(2026,5,15);   // 模拟“今天” 2026-06-15
+  function addDays(d, n){ var x=new Date(d); x.setDate(x.getDate()+n); return x; }
+  function fmtDot(d){ var m=('0'+(d.getMonth()+1)).slice(-2), day=('0'+d.getDate()).slice(-2); return d.getFullYear()+'.'+m+'.'+day; }
+  function fmtYMD(d){ var m=('0'+(d.getMonth()+1)).slice(-2), day=('0'+d.getDate()).slice(-2); return d.getFullYear()+'-'+m+'-'+day; }
+  function parseYMD(s){ var p=s.split('-'); return new Date(+p[0], +p[1]-1, +p[2]); }
+  function freqText(days){ return days===14?'每两周一次':(days===28?'每四周一次':'每月一次'); }
+
+  // 手动养号任务（指标=给操作人看的参考文本）
+  var MTASKS = [
+    {id:'follow',  icon:'t-article', name:'关注公众号',                 metric:'每次 3 个公众号', cycle:14, start:'2026-06-15', done:false},
+    {id:'traffic', icon:'i-traffic', name:'账号购买流量包',             metric:'',               cycle:30, start:'2026-06-15', done:false},
+    {id:'joingrp', icon:'i-group',   name:'加入生活类型群',             metric:'每次加 2 个群',   cycle:14, start:'2026-06-15', done:true,  doneDate:'2026-06-13'},
+    {id:'addbot',  icon:'i-bot',     name:'内部人员扫码加机器人微信',   metric:'添加 4–5 人',     cycle:14, start:'2026-06-15', done:false},
+    {id:'redpkt',  icon:'i-gift',    name:'发红包给内部人员',           metric:'每次 5 个红包',   cycle:14, start:'2026-06-15', done:false},
+    {id:'profile', icon:'i-edit',    name:'更改资料（头像/昵称/签名/地区）', metric:'',           cycle:30, start:'2026-06-15', done:false}
+  ];
+  function mtById(id){ return MTASKS.filter(function(t){return t.id===id;})[0]; }
+  // 本周期截止日：已完成 = 完成日+周期（下一周期截止）；待完成 = 开始日+周期
+  function mtDeadline(t){
+    var base = t.done && t.doneDate ? parseYMD(t.doneDate) : parseYMD(t.start);
+    return addDays(base, t.cycle);
+  }
+
+  var manualList = document.getElementById('manualList');
+  function renderManual(){
+    var doneN = MTASKS.filter(function(t){return t.done;}).length;
+    document.getElementById('mDone').textContent = doneN;
+    document.getElementById('mTotal').textContent = MTASKS.length;
+    document.getElementById('mProgBar').style.width = Math.round(doneN/MTASKS.length*100)+'%';
+    manualList.innerHTML = MTASKS.map(function(t){
+      var dl = mtDeadline(t);
+      var deadlineHtml = t.done
+        ? '<svg width="14" height="14"><use href="#i-check"/></svg>已完成 · 下一周期截止 <b>'+fmtDot(dl)+'</b>'
+        : '<svg width="14" height="14"><use href="#i-calendar"/></svg>本周期截止 <b>'+fmtDot(dl)+'</b>';
+      var btn = t.done
+        ? '<button class="mtask__btn done-btn" data-mdone="'+t.id+'"><svg width="14" height="14"><use href="#i-check"/></svg>已完成</button>'
+        : '<button class="mtask__btn" data-mdone="'+t.id+'"><svg width="14" height="14"><use href="#i-hand"/></svg>标记完成</button>';
+      return '<div class="mtask'+(t.done?' done':'')+'">'+
+        '<div class="mtask__head">'+
+          '<span class="mtask__ico"><svg width="20" height="20"><use href="#'+t.icon+'"/></svg></span>'+
+          '<span class="mtask__main"><span class="mtask__name">'+t.name+'</span>'+
+            '<span class="mtask__tags"><span class="mtask__freq">'+freqText(t.cycle)+'</span>'+
+              (t.metric?'<span class="mtask__metric">指标：'+t.metric+'</span>':'')+'</span>'+
+          '</span>'+
+          '<button class="mtask__gear" data-mset="'+t.id+'" aria-label="周期设置"><svg width="18" height="18"><use href="#i-cog"/></svg></button>'+
+        '</div>'+
+        '<div class="mtask__foot">'+
+          '<span class="mtask__deadline">'+deadlineHtml+'</span>'+
+          btn+
+        '</div>'+
+      '</div>';
+    }).join('');
+  }
+  manualList.addEventListener('click', function(e){
+    var done=e.target.closest('[data-mdone]'), set=e.target.closest('[data-mset]');
+    if(done){
+      var t=mtById(done.dataset.mdone);
+      t.done=!t.done;
+      if(t.done) t.doneDate = fmtYMD(NOW);
+      renderManual();
+    } else if(set){
+      openMt(set.dataset.mset);
+    }
+  });
+  document.getElementById('manualAccBtn').addEventListener('click', function(){ openAcc('账号列表'); });
+
+  /* 完成记录页 */
+  var logPage=document.getElementById('logPage');
+  var logList=document.getElementById('logList'), logFrom=document.getElementById('logFrom'), logTo=document.getElementById('logTo');
+  var logTypeBtns=document.getElementById('logTypeBtns');
+  var logFilterType=null, logFilterFrom=null, logFilterTo=null;
+  // 模拟历史完成记录（倒序）
+  var LOG = [
+    {id:'joingrp', date:'2026-06-13', time:'14:32', cycle:14},
+    {id:'follow',  date:'2026-05-30', time:'10:05', cycle:14},
+    {id:'profile', date:'2026-05-28', time:'09:20', cycle:30},
+    {id:'redpkt',  date:'2026-05-28', time:'11:45', cycle:14},
+    {id:'addbot',  date:'2026-05-20', time:'15:10', cycle:14},
+    {id:'traffic', date:'2026-05-15', time:'09:00', cycle:30},
+    {id:'follow',  date:'2026-05-16', time:'10:30', cycle:14}
+  ];
+  function buildLogPage(){
+    // 类型筛选按钮
+    logTypeBtns.innerHTML = '<button class="log-type-btn is-on" data-lt="all">全部</button>'+
+      MTASKS.map(function(t){ return '<button class="log-type-btn" data-lt="'+t.id+'">'+t.name+'</button>'; }).join('');
+    logFilterType=null; logFilterFrom=null; logFilterTo=null;
+    logFrom.value=''; logTo.value='';
+    renderLog();
+  }
+  function renderLog(){
+    var rows=LOG.filter(function(r){
+      if(logFilterType && r.id!==logFilterType) return false;
+      if(logFilterFrom && r.date<logFilterFrom) return false;
+      if(logFilterTo   && r.date>logFilterTo)   return false;
+      return true;
+    });
+    if(!rows.length){ logList.innerHTML='<div class="log-empty">暂无完成记录</div>'; return; }
+    // 按日期分组（倒序）
+    var byDate={};
+    rows.forEach(function(r){ if(!byDate[r.date]) byDate[r.date]=[]; byDate[r.date].push(r); });
+    var dates=Object.keys(byDate).sort().reverse();
+    logList.innerHTML=dates.map(function(d){
+      var label=d.replace(/-/g,'.');
+      return '<div class="log-group"><div class="log-group__date">'+label+'</div>'+
+        byDate[d].map(function(r){
+          var t=mtById(r.id);
+          return '<div class="log-row">'+
+            '<span class="log-row__ico"><svg width="18" height="18"><use href="#'+t.icon+'"/></svg></span>'+
+            '<span class="log-row__main"><span class="log-row__name">'+t.name+'</span>'+
+              '<span class="log-row__meta">'+freqText(r.cycle)+'</span></span>'+
+            '<span class="log-row__time">'+r.time+'</span>'+
+          '</div>';
+        }).join('')+
+      '</div>';
+    }).join('');
+  }
+  logTypeBtns.addEventListener('click',function(e){
+    var b=e.target.closest('[data-lt]'); if(!b) return;
+    [].forEach.call(logTypeBtns.children,function(x){ x.classList.toggle('is-on',x===b); });
+    logFilterType = b.dataset.lt==='all' ? null : b.dataset.lt;
+    renderLog();
+  });
+  logFrom.addEventListener('change',function(){ logFilterFrom=logFrom.value||null; renderLog(); });
+  logTo.addEventListener('change',function(){ logFilterTo=logTo.value||null; renderLog(); });
+  document.getElementById('logReset').addEventListener('click',function(){
+    logFilterType=null; logFilterFrom=null; logFilterTo=null;
+    logFrom.value=''; logTo.value='';
+    [].forEach.call(logTypeBtns.children,function(b){ b.classList.toggle('is-on', b.dataset.lt==='all'); });
+    renderLog();
+  });
+  document.getElementById('manualLogBtn').addEventListener('click',function(){ buildLogPage(); logPage.classList.add('show'); });
+  document.getElementById('logBack').addEventListener('click',function(){ logPage.classList.remove('show'); });
+
+  /* 手动任务：周期设置弹层 */
+  var mtMask=document.getElementById('mtMask'), mtSheet=document.getElementById('mtSheet');
+  var mtStart=document.getElementById('mtStart'), mtCycleSeg=document.getElementById('mtCycleSeg');
+  var mtEditing=null, mtTmpCycle=14;
+  function openMt(id){
+    var t=mtById(id); mtEditing=id; mtTmpCycle=t.cycle;
+    document.getElementById('mtName').textContent=t.name;
+    mtStart.value=t.start;
+    [].forEach.call(mtCycleSeg.children,function(b){ b.classList.toggle('is-on', +b.dataset.cycle===t.cycle); });
+    mtMask.classList.add('show'); mtSheet.classList.add('show');
+  }
+  function closeMt(){ mtMask.classList.remove('show'); mtSheet.classList.remove('show'); mtEditing=null; }
+  mtCycleSeg.addEventListener('click', function(e){
+    var b=e.target.closest('[data-cycle]'); if(!b) return;
+    mtTmpCycle=+b.dataset.cycle;
+    [].forEach.call(mtCycleSeg.children,function(x){ x.classList.toggle('is-on', x===b); });
+  });
+  document.getElementById('mtSave').addEventListener('click', function(){
+    var t=mtById(mtEditing); if(t){ t.cycle=mtTmpCycle; t.start=mtStart.value||t.start; }
+    closeMt(); renderManual();
+  });
+  mtMask.addEventListener('click', closeMt);
+  document.getElementById('mtCancel').addEventListener('click', closeMt);
+
+  /* ---------- Tab 切换 ---------- */
+  var viewAI=document.getElementById('viewAI'), viewManual=document.getElementById('viewManual');
+  document.querySelector('.tabs').addEventListener('click', function(e){
+    var b=e.target.closest('[data-tab]'); if(!b) return;
+    [].forEach.call(b.parentNode.children,function(x){ x.classList.toggle('is-on', x===b); });
+    var ai = b.dataset.tab==='ai';
+    viewAI.hidden = !ai; viewManual.hidden = ai;
+  });
+
   /* ---------- 初始化 ---------- */
   buildToday();
   buildAccordion();
+  resetProgress();
   renderActive();
+  renderManual();
 })();
 </script>
 </body>
